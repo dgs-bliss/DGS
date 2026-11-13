@@ -21,12 +21,19 @@ const parseEnvFile = (path) => {
   return values;
 };
 
-// Never let a token exported by another migration override this repository.
+// Never let a token exported by another local migration override this repository.
+// In Cloudflare Workers Builds there is intentionally no `.env`; the project's
+// configured build variables are the approved source and must remain available.
 const siteEnv = { ...process.env };
-for (const key of Object.keys(siteEnv)) {
-  if (/^(TINA_|NEXT_PUBLIC_TINA_|PUBLIC_TINA_)/.test(key)) delete siteEnv[key];
+const envFilePath = resolve(process.env.SITE_ENV_FILE || '.env');
+const fileEnv = parseEnvFile(envFilePath);
+const trustedWorkersBuildEnv = process.env.WORKERS_CI === '1' && !existsSync(envFilePath);
+if (!trustedWorkersBuildEnv) {
+  for (const key of Object.keys(siteEnv)) {
+    if (/^(TINA_|NEXT_PUBLIC_TINA_|PUBLIC_TINA_)/.test(key)) delete siteEnv[key];
+  }
+  Object.assign(siteEnv, fileEnv);
 }
-Object.assign(siteEnv, parseEnvFile(resolve('.env')));
 
 const protectedEntries = Object.entries(siteEnv).filter(([key, value]) =>
   /(TOKEN|PASSWORD|SECRET|PRIVATE_KEY|API_KEY)/i.test(key)

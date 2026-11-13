@@ -1,0 +1,20 @@
+{
+  "control": "MIGRATION-ASSURANCE-EXECUTABLE-001",
+  "skill": "astro-tina-cms",
+  "skill_path": "/home/aaisha/.hermes/skills/software-development/astro-tina-cms",
+  "automatic_core": true,
+  "artifacts": {
+    "SKILL.md": "1f34c4a903f8f18a81ae7f6e5d0b23bc22f1413e68174b929117d1ad3e249d10",
+    "references/ASTRO-TINA-MIGRATION-CORE.md": "48f2e44427d1f05682106a6d8183167b7656425dd82d87abd4ca08cf1830915c",
+    "references/ASTRO-TINA-MIGRATION-STATE-MACHINE.md": "24713100ecdabeae755d1eb9db620bcab1977e93b033b072f6a3d89e7ee4859f",
+    "references/ASTRO-TINA-MIGRATION-COMPLETION-POLICY.json": "035d0ba2e3d3b70b9d11fa6f65051db75090fb99ac1460cd97268c956dd03bb0",
+    "references/TINA-FULLCHECK.md": "6a332f7ef5828d8f275f8537712ac4180dbe484c0bd1f8b7fcf1e9152141388c",
+    "references/PUBLISHER-ADMIN-GATE.md": "b7f2076fa3ac02fabb775772d26d55797c37629f1401eb147ea198cefceda047",
+    "templates/migration-evidence-manifest.json": "ceb3ed80a1649bb156d9beffecd51ab24c5fb0c57cb88050a7707f35281a0a97",
+    "scripts/validate-migration-completion.mjs": "98c48ba7cc1f4f797e7352edac3f67c0fd485ad8a1f743ed0e155705fd5b8231",
+    "scripts/test-migration-completion-negative.mjs": "3a1c255e701bb8a486f9e06742ecd8071fa79c02f6bbeaa2be22c736b94906af",
+    "references/MIGRATION-ASSURANCE-EXECUTABLE-001.md": "e86476fefc6efa171ddab4dcc5fe4194450557f289a895a659c920a945a732db",
+    "references/CATEGORY-ROUTE-MULTICAT-EXECUTABLE-001.md": "52da2695ca91a878ba2b86f248359a952920c36d38ccbe415fac998e0991db7f",
+    "references/GITHUB-AUTHORIZATION-CONTRACT-001.md": "e93d53224419f6837342d7c814f77e329ae105830d7d98968067c3a8880bfc83"
+  }
+}

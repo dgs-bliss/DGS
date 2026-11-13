@@ -1,0 +1,33 @@
+{
+  "schema": "astro-tina-core-gate-zero-v1",
+  "general_status": "READY_FOR_EXACT_ACCESS_CHECKS",
+  "tracker_checked": true,
+  "saved_evidence_checked": true,
+  "organization_switcher_checked": true,
+  "positive_identity_preserved": true,
+  "auth_separated_from_existence": true,
+  "rules_conflict_check": true,
+  "user_declared_prerequisites_complete": true,
+  "user_provided_everything_user_tested": true,
+  "user_supplied_resources_preserved": true,
+  "resource_existence_separated_from_access": true,
+  "approved_sources_exhausted_before_auth_blocked": true,
+  "no_replacement_resources_created": true,
+  "agent_assumption_cannot_override_user_verified_resources": true,
+  "authentication_methods_checked": true,
+  "supplied_owner_evidence_preserved": true,
+  "no_owner_self_invitation_requested": true,
+  "resources": [
+    {"name":"github-repository:dgs-bliss/DGS","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"github-fine-grained-token","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"tina-organization:dgs-bliss's Organization","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"tina-project:DGS","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"tina-client-id:tracker-and-screenshot-confirmed","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"tina-readonly-token","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"cloudinary-account-and-api-pair","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"formspree-form","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"cloudflare-account-and-api-token","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"dgs-domain-and-existing-wordpress-origin","existence":"PASS_USER_VERIFIED","consumption":"PENDING","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false},
+    {"name":"supplied-dgs-homepage-mockup-and-assets","existence":"PASS_USER_VERIFIED","consumption":"PASS","access":"PASS","approved_sources_checked":true,"replacement_created":false,"recreation_requested":false}
+  ]
+}

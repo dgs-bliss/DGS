@@ -1,0 +1,41 @@
+---
+import { tinaField } from "@tinacms/astro/tina-field";
+import type { CmsConfig } from '../lib/data';
+
+interface Props {
+  config?: CmsConfig | null;
+  navigation?: NavigationDocument | null;
+}
+
+type NavItem = {
+  label?: string | null;
+  href?: string | null;
+  children?: (NavItem | null)[] | null;
+};
+
+type NavigationDocument = {
+  title?: string | null;
+  items?: (NavItem | null)[] | null;
+};
+
+const { config, navigation } = Astro.props;
+const seo = config?.seo ?? null;
+const siteTitle = seo?.title || 'Digital Growth Society';
+const menuItems = ((navigation?.items ?? []) as NavItem[]).filter((item) => item && item.label && item.href);
+const action = menuItems[0] || { label: 'Apply to speak', href: '#apply' };
+---
+
+<header class="dgs-site-header" data-brand-header>
+  <nav class="dgs-site-header__inner" aria-label={navigation?.title || 'Primary menu'}>
+    <a href="/#top" class="dgs-site-header__logo" aria-label={`${siteTitle}, home`}>
+      <span aria-hidden="true">DGS</span>
+    </a>
+    <div class="dgs-site-header__actions">
+      <a
+        class="dgs-site-header__cta"
+        href={action.href || '#apply'}
+        data-tina-field={navigation ? tinaField(action, 'label') : undefined}
+      >{action.label || 'Apply to speak'}</a>
+    </div>
+  </nav>
+</header>

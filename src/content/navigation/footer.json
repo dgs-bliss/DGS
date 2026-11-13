@@ -1,0 +1,17 @@
+{
+  "title": "Footer",
+  "items": [
+    {
+      "label": "Privacy",
+      "href": "/#top"
+    },
+    {
+      "label": "Terms",
+      "href": "/#top"
+    },
+    {
+      "label": "Cookies",
+      "href": "/#top"
+    }
+  ]
+}

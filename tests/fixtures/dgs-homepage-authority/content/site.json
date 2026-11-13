@@ -1,0 +1,119 @@
+{
+  "name": "Digital Growth Society",
+  "short": "DGS",
+  "since": 2019,
+  "tagline": "Greater together",
+  "mission": "Empowering digital entrepreneurs to grow together with generosity, dependability and fun.",
+  "values": [
+    {
+      "letter": "L",
+      "title": "Loyalty",
+      "tag": "Integrity, confidentiality and commitment",
+      "body": "What is said at the table stays at the table."
+    },
+    {
+      "letter": "O",
+      "title": "Obsession",
+      "tag": "Passion, focus and big goals",
+      "body": "Everyone shows up having done the work."
+    },
+    {
+      "letter": "V",
+      "title": "Value add",
+      "tag": "Sharing, smart tips and strong networks",
+      "body": "Real numbers, real playbooks and introductions that matter."
+    },
+    {
+      "letter": "E",
+      "title": "Encourage",
+      "tag": "Support, care and confidence",
+      "body": "Especially when a bet doesn’t pay off."
+    }
+  ],
+  "lab": [
+    {
+      "n": "01",
+      "t": "Autonomous SEO agents",
+      "b": "Agents that build pages, fix errors and ship client sites in days, with no one at the keyboard."
+    },
+    {
+      "n": "02",
+      "t": "AI search visibility",
+      "b": "What gets a brand cited by ChatGPT, Gemini and Google’s AI answers, and how to prove who published it first."
+    },
+    {
+      "n": "03",
+      "t": "Schema and entities at scale",
+      "b": "Machine-readable sites that search engines and AI models understand without guessing."
+    },
+    {
+      "n": "04",
+      "t": "Building the AI stack",
+      "b": "Which models, tools and hardware are worth paying for, and how to keep token costs from running away."
+    },
+    {
+      "n": "05",
+      "t": "Selling AI to clients",
+      "b": "Packaging AI into services owners will pay for, including outcome-based deals."
+    },
+    {
+      "n": "06",
+      "t": "Security for the AI era",
+      "b": "Backups, hardening and agents that catch attacks before a client loses a lead."
+    },
+    {
+      "n": "07",
+      "t": "Running great agencies",
+      "b": "Sales, hiring and client service, including warrior mode when the pipeline slows."
+    },
+    {
+      "n": "08",
+      "t": "Net worth and legacy",
+      "b": "Turning agency profits into lasting wealth, and what we give back along the way."
+    }
+  ],
+  "retreats": [
+    {
+      "place": "Evergreen",
+      "region": "Colorado"
+    },
+    {
+      "place": "Austin",
+      "region": "Texas"
+    },
+    {
+      "place": "Orlando",
+      "region": "Florida"
+    },
+    {
+      "place": "Smoky Mountains",
+      "region": "Tennessee"
+    }
+  ],
+  "perks": [
+    {
+      "t": "Your idea, put to work",
+      "b": "Twelve agencies with live client accounts. Ideas that hold up get used, and you hear how they performed."
+    },
+    {
+      "t": "Your own hot seat",
+      "b": "Bring a problem you’re stuck on. Twelve operators will give you their best advice and share what’s worked for them."
+    },
+    {
+      "t": "Relationships that last",
+      "b": "Connections and referrals with established agency owners across the US and Canada."
+    },
+    {
+      "t": "A seat on the Master Council",
+      "b": "Stay connected with the group, and be in the running when a seat opens."
+    }
+  ],
+  "photos": {
+    "hero-fishing": "/images/photos/hero-fishing.jpg",
+    "friday-zoom": "/images/photos/friday-zoom.jpg",
+    "retreat-presenting": "/images/photos/retreat-presenting.jpg",
+    "retreat-teaching": "/images/photos/retreat-teaching.jpg",
+    "retreat-dinner": "/images/photos/retreat-dinner.jpg",
+    "retreat-cabin": "/images/photos/retreat-cabin.jpg"
+  }
+}

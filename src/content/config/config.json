@@ -1,0 +1,28 @@
+{
+  "headerNavigation": "src/content/navigation/header.json",
+  "footerNavigation": "src/content/navigation/footer.json",
+  "seo": {
+    "title": "Digital Growth Society",
+    "description": "A private mastermind of twelve agency owners who meet every Friday to test what is next in SEO and AI.",
+    "siteOwner": "Digital Growth Society",
+    "logo": "https://res.cloudinary.com/ljjidst6/image/upload/v1794325968/digitalgrowthsociety/DGS-Logo-Retina.png",
+    "favicon": "https://res.cloudinary.com/ljjidst6/image/upload/v1794323401/digitalgrowthsociety/DGS-Logo.png",
+    "footerLogo": "https://res.cloudinary.com/ljjidst6/image/upload/v1794325968/digitalgrowthsociety/DGS-Logo-Retina.png",
+    "footerTagline": "Greater together · Since 2019",
+    "footerCopyrightSuffix": "A nonprofit mastermind"
+  },
+  "contactForm": {
+    "formspreeEndpoint": "https://formspree.io/f/xkjjdbok",
+    "heading": "Contact us",
+    "description": "Configure a unique Formspree endpoint for this site before enabling submissions.",
+    "buttonText": "Send Message",
+    "note": "This form remains disabled until its Formspree endpoint is configured.",
+    "subject": "Digital Growth Society contact form submission"
+  },
+  "codeInjection": {
+    "headerCode": "",
+    "footerCode": ""
+  },
+  "contactLinks": [],
+  "footerStarfield": false
+}

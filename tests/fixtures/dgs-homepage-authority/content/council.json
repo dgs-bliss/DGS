@@ -1,0 +1,128 @@
+[
+  {
+    "order": 1,
+    "name": "Kyle Roof",
+    "url": "https://kyleroof.com/",
+    "photo": "/images/council/kyle-roof.jpg",
+    "initials": "KR"
+  },
+  {
+    "order": 2,
+    "name": "Dixon Jones",
+    "url": "https://dixonjones.com/",
+    "photo": "/images/council/dixon-jones.jpg",
+    "initials": "DJ"
+  },
+  {
+    "order": 3,
+    "name": "Steven Kang",
+    "url": "https://seosignalslab.com/",
+    "photo": "/images/council/steven-kang.jpg",
+    "initials": "SK"
+  },
+  {
+    "order": 4,
+    "name": "Ted Kubaitis",
+    "url": "https://seotoollab.com/",
+    "photo": "/images/council/ted-kubaitis.jpg",
+    "initials": "TK"
+  },
+  {
+    "order": 5,
+    "name": "Bradley Benner",
+    "url": "https://semanticmastery.com/",
+    "photo": "/images/council/bradley-benner.jpg",
+    "initials": "BB"
+  },
+  {
+    "order": 6,
+    "name": "Lee Witcher",
+    "url": "https://www.linkedin.com/in/leewitcher/",
+    "photo": "/images/council/lee-witcher.jpg",
+    "initials": "LW"
+  },
+  {
+    "order": 7,
+    "name": "Holly Starks",
+    "url": "https://hollystarks.com/",
+    "photo": "/images/council/holly-starks.jpg",
+    "initials": "HS"
+  },
+  {
+    "order": 8,
+    "name": "Eric Lancheres",
+    "url": "https://on-page.ai/",
+    "photo": "/images/council/eric-lancheres.jpg",
+    "initials": "EL"
+  },
+  {
+    "order": 9,
+    "name": "Viktoria Altman",
+    "url": "https://bsplegalmarketing.com/about/",
+    "photo": "/images/council/viktoria-altman.jpg",
+    "initials": "VA"
+  },
+  {
+    "order": 10,
+    "name": "Zach DeLorenzo",
+    "url": "https://www.hqdm.io/team-members/zach-delorenzo",
+    "photo": "/images/council/zach-delorenzo.jpg",
+    "initials": "ZD"
+  },
+  {
+    "order": 11,
+    "name": "Michael Rayburn",
+    "url": "https://www.linkedin.com/in/michael-rayburn-22a6811b/",
+    "photo": "/images/council/michael-rayburn.jpg",
+    "initials": "MR"
+  },
+  {
+    "order": 12,
+    "name": "Rush Eby",
+    "url": "https://banditmediagroup.com/",
+    "photo": "/images/council/rush-eby.jpg",
+    "initials": "RE"
+  },
+  {
+    "order": 13,
+    "name": "Bernard Ablola",
+    "url": "https://bernardablola.com/",
+    "photo": "/images/council/bernard-ablola.jpg",
+    "initials": "BA"
+  },
+  {
+    "order": 14,
+    "name": "Marty Marion",
+    "url": "https://masterpositioning.com/",
+    "photo": "/images/council/marty-marion.jpg",
+    "initials": "MM"
+  },
+  {
+    "order": 15,
+    "name": "Matt Zimmerman",
+    "url": "https://getprompted.ai/",
+    "photo": "/images/council/matt-zimmerman.jpg",
+    "initials": "MZ"
+  },
+  {
+    "order": 16,
+    "name": "Nicholas Rizzo",
+    "url": "https://www.linkedin.com/in/nicholas-rizzo-7289bb54/",
+    "photo": "/images/council/nicholas-rizzo.jpg",
+    "initials": "NR"
+  },
+  {
+    "order": 17,
+    "name": "Adam O’Hern",
+    "url": "https://www.linkedin.com/in/adam-ohern/",
+    "photo": "/images/council/adam-ohern.jpg",
+    "initials": "AO"
+  },
+  {
+    "order": 18,
+    "name": "David Hood",
+    "url": null,
+    "photo": "/images/council/david-hood.jpg",
+    "initials": "DH"
+  }
+]

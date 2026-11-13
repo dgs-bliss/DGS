@@ -1,0 +1,20 @@
+[
+  {
+    "order": 1,
+    "name": "Tony Atkins",
+    "url": "https://thinkbrandedmedia.com/",
+    "photo": "/images/advisors/tony-atkins.jpg"
+  },
+  {
+    "order": 2,
+    "name": "Steve Toth",
+    "url": "https://www.seonotebook.com/",
+    "photo": "/images/advisors/steve-toth.jpg"
+  },
+  {
+    "order": 3,
+    "name": "Garret Acott",
+    "url": "https://www.linkedin.com/in/garretacott/",
+    "photo": "/images/advisors/garret-acott.jpg"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "schema": "astro-tina-migration-provenance-v1",
+  "runId": "dgs-homepage-20261113",
+  "sourceAuthority": "User-supplied dgs-handoff2.zip mockup, content, screenshots, and assets",
+  "sourceAuthoritySha256": "3ebecfd2f354cc3a620075eae91564230e107a68bc3ac66144d69f56316cc50b",
+  "scaffoldRepository": "https://github.com/dgs-bliss/digitalgrowthsociety",
+  "scaffoldCommit": "47a23153fcbce18776d670ffcacff4384a4619c6",
+  "destinationRepository": "https://github.com/dgs-bliss/DGS",
+  "site": "https://www.digitalgrowthsociety.org",
+  "tinaOrganization": "dgs-bliss's Organization",
+  "tinaProject": "DGS",
+  "tinaProjectClientId": "256cd137-6a4b-4285-ab65-7bf0687aa753",
+  "tinaBranch": "main",
+  "requestedRoutes": [
+    "/"
+  ],
+  "globalShell": [
+    "src/templates/Header.astro",
+    "src/templates/Footer.astro"
+  ],
+  "notes": [
+    "Homepage-only scope; no additional page implementation requested.",
+    "Existing WordPress production is not modified."
+  ]
+}

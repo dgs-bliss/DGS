@@ -1,0 +1,274 @@
+[
+  {
+    "order": 1,
+    "slug": "richard-fong",
+    "name": "Richard Fong",
+    "nickname": "The Compounder",
+    "cred": "Founder, Bliss Drive · California",
+    "company": "Bliss Drive",
+    "url": "https://www.blissdrive.com",
+    "host": true,
+    "bio": "Came to SEO from finance and runs every campaign like a portfolio: steady gains that stack on each other. Has compounded Bliss Drive into a 7-figure agency. As host of DGS, he runs the Friday table and keeps the accountability round honest.",
+    "badges": [
+      {
+        "label": "Host · Digital Growth Society",
+        "style": "solid"
+      },
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/richard-fong.jpg",
+    "ringPhoto": "/images/ring/richard-fong.jpg",
+    "photoLabel": "Host of DGS"
+  },
+  {
+    "order": 2,
+    "slug": "chris-koszo",
+    "name": "Chris Koszo",
+    "nickname": "The Lone Star Sharpshooter",
+    "cred": "Founder, Search 1 Agency · Texas",
+    "company": "Search 1 Agency",
+    "url": "https://search1agency.com",
+    "host": false,
+    "bio": "A one-man shop with big-firm aim. Lands #1 rankings for lawyers in some of the toughest legal markets, consults on enterprise and international SEO for brands like Cathay Pacific, Purina and Microsoft, and once outranked NASA.gov just for fun.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/chris-koszo.jpg",
+    "ringPhoto": "/images/ring/chris-koszo.jpg"
+  },
+  {
+    "order": 3,
+    "slug": "andrew-ansley",
+    "name": "Andrew Ansley",
+    "nickname": "The Autopilot",
+    "cred": "Founder, Thorbit · Colorado",
+    "company": "Thorbit",
+    "url": "#",
+    "host": false,
+    "bio": "Philosophy grad turned entity-SEO authority who built and sold an agency. Now building Thorbit, an SEO agent that runs a site on its own: building pages, writing schema, fixing errors and submitting to Google and Bing around the clock.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Founder · Vibe Coder community",
+        "style": "outline"
+      },
+      {
+        "label": "Creator · MCPScraper",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/andrew-ansley.jpg",
+    "ringPhoto": "/images/ring/andrew-ansley.jpg"
+  },
+  {
+    "order": 4,
+    "slug": "brian-winum",
+    "name": "Brian Winum",
+    "nickname": "The Authority Stacker",
+    "cred": "Partner, MAXBURST & MAXPlaces · New York",
+    "company": "MAXPlaces",
+    "url": "https://brianwinum.com",
+    "host": false,
+    "bio": "Building brands in search since 1998 and a four-time SEO Spring Training speaker. His WP Content Ledger signs every post and timestamps it on the Bitcoin blockchain, so authorship can be proven.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Creator · Authority Amplifier",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/brian-winum.jpg",
+    "ringPhoto": "/images/ring/brian-winum.jpg"
+  },
+  {
+    "order": 5,
+    "slug": "chris-castillo",
+    "name": "Chris Castillo",
+    "nickname": "The Agent Architect",
+    "cred": "Founder, Propel Digital Marketing · Ontario",
+    "company": "Propel",
+    "url": "https://propeldigitalmarketing.ca/",
+    "host": false,
+    "bio": "Runs his agency with a team of AI agents, each with a name: Neo handles support, Cypher writes the code and Vector runs SEO. Strategy built around ROI and conversion.",
+    "badges": [
+      {
+        "label": "Host · Web development community",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/chris-castillo.jpg",
+    "ringPhoto": "/images/ring/chris-castillo.jpg"
+  },
+  {
+    "order": 6,
+    "slug": "chas-henry",
+    "name": "Chas Henry",
+    "nickname": "The Local Legend",
+    "cred": "Owner, C.H. Local Media · Mississippi",
+    "company": "C.H. Local Media",
+    "url": "#",
+    "host": false,
+    "bio": "Local SEO for small and mid-size businesses across the Tupelo area. Ranked a top web design firm in Mississippi by DesignRush.",
+    "badges": [],
+    "photo": "/images/members/chas-henry.jpg",
+    "ringPhoto": "/images/ring/chas-henry.jpg"
+  },
+  {
+    "order": 7,
+    "slug": "chris-labbate",
+    "name": "Chris Labbate",
+    "nickname": "Captain Canada",
+    "cred": "Founder, SEOBANK · Ontario",
+    "company": "SEOBANK",
+    "url": "https://seobank.ca",
+    "host": false,
+    "bio": "Started doing SEO in 1998, the same year Google was founded. Built master-metrics.com in-house, migrates 4,000-page stores without losing rankings, and still takes pages to #1 with entities and advanced schema.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Creator · Master Metrics",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/chris-labbate.jpg",
+    "ringPhoto": "/images/ring/chris-labbate.jpg"
+  },
+  {
+    "order": 8,
+    "slug": "cory-hubbell",
+    "name": "Cory Hubbell",
+    "nickname": "The Inventor",
+    "cred": "Founder, Entity Clouds · Texas",
+    "company": "Entity Clouds",
+    "url": "https://entityclouds.com",
+    "host": false,
+    "bio": "Builds his own AI instead of renting it. His agents write schema, ship top-shelf client sites in a day or two, and hunt down server attacks. If a tool isn’t open, he builds a better one.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Creator · Schema Brains",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/cory-hubbell.jpg",
+    "ringPhoto": "/images/ring/cory-hubbell.jpg"
+  },
+  {
+    "order": 9,
+    "slug": "mike-merlino",
+    "name": "Mike Merlino",
+    "nickname": "The Hype Man",
+    "cred": "Founder, Merlino Marketing · Florida",
+    "company": "Merlino Marketing",
+    "url": "#",
+    "host": false,
+    "bio": "Straight talk and big energy. A CMO by trade and co-founder of Pocket Marketer who measures SEO in dollars per call. Believes he who has the compute wins, so he runs his own hardware and local AI models.",
+    "badges": [
+      {
+        "label": "Co-organizer · SEO Rockstars",
+        "style": "solid"
+      },
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Instructor · Workshops & courses",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/mike-merlino.jpg",
+    "ringPhoto": "/images/ring/mike-merlino.jpg"
+  },
+  {
+    "order": 10,
+    "slug": "brian-kato",
+    "name": "Brian Kato",
+    "nickname": "The Rock Star",
+    "cred": "Founder, Fusion Vine · Colorado",
+    "company": "Fusion Vine",
+    "url": "#",
+    "host": false,
+    "bio": "Former BMI-affiliated rock frontman turned brand-SEO strategist, and still touring: now it’s the 2026 SEO Tour, teaching cohorts from the U.S. to London. Works where cybersecurity meets marketing.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Instructor · Workshops & courses",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/brian-kato.jpg",
+    "ringPhoto": "/images/ring/brian-kato.jpg"
+  },
+  {
+    "order": 11,
+    "slug": "brian-hong",
+    "name": "Brian Hong",
+    "nickname": "The Dealmaker",
+    "cred": "Founder, Infintech Designs · Louisiana",
+    "company": "Infintech Designs",
+    "url": "https://www.infintechdesigns.com",
+    "host": false,
+    "bio": "In SEO since 2000. Now building AI revenue engines, including Flowbots and an intent-data product that turns cold outreach into booked appointments. Prefers to get paid on outcomes.",
+    "badges": [
+      {
+        "label": "Co-organizer · SEO Rockstars",
+        "style": "solid"
+      },
+      {
+        "label": "Creator · Flowbots",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/brian-hong.jpg",
+    "ringPhoto": "/images/ring/brian-hong.jpg"
+  },
+  {
+    "order": 12,
+    "slug": "simon-cornelius",
+    "name": "Simon Cornelius",
+    "nickname": "The Lazy Coder",
+    "cred": "Local SEO & schema engineer · Texas",
+    "company": "[Website]",
+    "url": "#",
+    "host": false,
+    "bio": "A self-described introvert who loves networking, and an engineer at heart: if he has to do something twice, he writes a tool for it. Built his own accounting app in an afternoon rather than pay for one, and teaches an Entities & Schema course.",
+    "badges": [
+      {
+        "label": "Conference speaker",
+        "style": "outline"
+      },
+      {
+        "label": "Instructor · Entities & Schema",
+        "style": "outline"
+      },
+      {
+        "label": "Level 7 · Google Local Guide",
+        "style": "outline"
+      }
+    ],
+    "photo": "/images/members/simon-cornelius.jpg",
+    "ringPhoto": "/images/ring/simon-cornelius.jpg"
+  }
+]

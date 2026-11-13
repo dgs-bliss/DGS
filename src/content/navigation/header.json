@@ -1,0 +1,9 @@
+{
+  "title": "Header Navigation",
+  "items": [
+    {
+      "label": "Apply to speak",
+      "href": "/#apply"
+    }
+  ]
+}

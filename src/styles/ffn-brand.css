@@ -1,5 +1,4 @@
 /* Exact Digital Growth Society mockup layout CSS - generated from supplied index.html */
-@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@400;500;600;700;800&family=Big+Shoulders+Display:wght@400;500;600;700;800;900&display=swap');
 
 :root{--blk:#12100E;--blk2:#1E1B18;--org:#EA580C;--org2:#C2470A;--dim:#6E6862;--txt:#302C28;--line:#DBD7D2;--wash:#F7F5F3;--dsp:'Big Shoulders Display',sans-serif;--cnd:'Barlow Condensed',sans-serif;--san:'Barlow',system-ui,sans-serif}
 *{box-sizing:border-box;margin:0;padding:0}

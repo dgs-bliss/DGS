@@ -1,5 +1,4 @@
 /* ASTRO-DEMO-LOCK authority: exact supplied homepage body responsive CSS, scoped from global chrome. */
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=Public+Sans:wght@300;400;500;600;700&family=Sora:wght@700;800&display=swap');
 .dgs-source-home,.dgs-source-home *,.dgs-source-home *::before,.dgs-source-home *::after{box-sizing:content-box}
 .dgs-source-home{font-family:'Public Sans',system-ui,sans-serif;font-size:16px;line-height:normal;color:#0A2240;background:#FFFFFF;width:100%;-webkit-font-smoothing:antialiased}
 .dgs-source-home :is(h1,h2,h3,h4,h5,h6){color:inherit}

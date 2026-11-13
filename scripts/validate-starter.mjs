@@ -284,7 +284,11 @@ if (!/missing required runtime variables/.test(startup) || !/throw new Error/.te
 }
 
 for (const relative of ['tina/__generated__/client.ts', 'tina/__generated__/types.ts', 'tina/__generated__/types.js']) {
-  const generated = read(relative);
+  const generatedPath = join(root, relative);
+  // tina/__generated__ is intentionally gitignored and does not exist in a clean
+  // Workers Builds clone until `tinacms build` runs later in the build command.
+  if (!existsSync(generatedPath)) continue;
+  const generated = readFileSync(generatedPath, 'utf8');
   if (/\/home\/[^/]+\//.test(generated)) fail(`${relative} contains a machine-specific home path.`);
   if (/token:\s*['"][A-Za-z0-9_-]{20,}['"]/.test(generated)) fail(`${relative} contains a generated credential literal.`);
 }

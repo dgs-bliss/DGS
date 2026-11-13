@@ -1,3 +1,21 @@
+.dgs-skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 2000;
+  padding: 12px 16px;
+  background: #FFFFFF;
+  color: #0A2240;
+  border: 2px solid #1F4E8C;
+  transform: translateY(-150%);
+}
+
+.dgs-skip-link:focus {
+  transform: translateY(0);
+  outline: 2px solid #1F4E8C;
+  outline-offset: 2px;
+}
+
 .dgs-site-header,
 .dgs-site-footer {
   font-family: 'Public Sans', system-ui, sans-serif;

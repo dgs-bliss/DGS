@@ -46,6 +46,7 @@ const defaultSocialImage = config?.seo?.defaultSocialImage || undefined;
 		{headerCode && <Fragment set:html={headerCode} />}
 	</head>
 	<body>
+		<a class="dgs-skip-link" href="#main-content">Skip to main content</a>
 		{/* Public Astro sites must render plain email addresses; prevent Cloudflare edge rewriting. */}
 		<Fragment set:html={'<!--email_off-->'} />
 		<Header config={config} navigation={headerNavigation} />

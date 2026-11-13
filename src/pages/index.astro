@@ -18,26 +18,56 @@ const title = seo?.metaTitle || data.seoTitle || config?.seo?.title || 'Digital 
 const description = seo?.metaDescription || config?.seo?.description || 'A private mastermind of twelve agency owners who meet every Friday to test what is next in SEO and AI.';
 const homepageBlock = (data.blocks ?? []).find((block: any) => block?.sourceContent);
 const sourceContent = (homepageBlock as any)?.sourceContent;
-const memberNameKeys = [
-	'text-richard-fong',
-	'text-chris-koszo',
-	'text-andrew-ansley',
-	'text-brian-winum',
-	'text-chris-castillo',
-	'text-chas-henry',
-	'text-chris-labbate',
-	'text-cory-hubbell',
-	'text-mike-merlino',
-	'text-brian-kato',
-	'text-brian-hong',
-	'text-simon-cornelius',
-];
+const memberDefinitions = [
+	['text-richard-fong', 'text-founder-bliss-drive-california', 'link-www-blissdrive-com'],
+	['text-chris-koszo', 'text-founder-search-1-agency-texas', 'link-search1agency-com'],
+	['text-andrew-ansley', 'text-founder-thorbit-colorado', 'link-link'],
+	['text-brian-winum', 'text-partner-maxburst-maxplaces-new-york', 'link-brianwinum-com'],
+	['text-chris-castillo', 'text-founder-propel-digital-marketing-ontario', 'link-propeldigitalmarketing-ca'],
+	['text-chas-henry', 'text-owner-c-h-local-media-mississippi', 'link-link-2'],
+	['text-chris-labbate', 'text-founder-seobank-ontario', 'link-seobank-ca'],
+	['text-cory-hubbell', 'text-founder-entity-clouds-texas', 'link-entityclouds-com'],
+	['text-mike-merlino', 'text-founder-merlino-marketing-florida', 'link-link-3'],
+	['text-brian-kato', 'text-founder-fusion-vine-colorado', 'link-link-4'],
+	['text-brian-hong', 'text-founder-infintech-designs-louisiana', 'link-www-infintechdesigns-com'],
+	['text-simon-cornelius', 'text-local-seo-schema-engineer-texas', 'link-link-5'],
+] as const;
 const memberTexts = sourceContent?.members?.texts ?? [];
-const memberNames = memberNameKeys
-	.map((key) => memberTexts.find((entry: any) => entry?.key === key)?.value)
-	.filter(Boolean);
+const memberLinks = sourceContent?.members?.links ?? [];
+const textValue = (items: any[], key: string, fallback = '') =>
+	String(items.find((entry: any) => entry?.key === key)?.value || fallback);
+const linkValue = (items: any[], key: string) =>
+	String(items.find((entry: any) => entry?.key === key)?.url || '');
+const members = memberDefinitions.map(([nameKey, titleKey, linkKey]) => {
+	const name = textValue(memberTexts, nameKey);
+	const titleLine = textValue(memberTexts, titleKey);
+	const [roleAndCompany = '', location = ''] = titleLine.split(' · ').map((value) => value.trim());
+	const commaIndex = roleAndCompany.indexOf(',');
+	const jobTitle = commaIndex > -1 ? roleAndCompany.slice(0, commaIndex).trim() : roleAndCompany;
+	const company = commaIndex > -1 ? roleAndCompany.slice(commaIndex + 1).trim() : '';
+	const url = linkValue(memberLinks, linkKey);
+	return {
+		'@type': 'Person',
+		name,
+		...(jobTitle ? { jobTitle } : {}),
+		...(company ? { worksFor: { '@type': 'Organization', name: company } } : {}),
+		...(location ? { homeLocation: { '@type': 'Place', name: location } } : {}),
+		...(/^https:\/\//.test(url) ? { sameAs: url } : {}),
+	};
+});
+const faqTexts = sourceContent?.faq?.texts ?? [];
+const faqDefinitions = [
+	['text-when-and-where-do-you-meet', 'text-every-friday-at-8-30-a-m-pacific-11-30-a-m-easte'],
+	['text-what-does-a-guest-session-look-like', 'text-we-start-with-a-quick-round-of-introductions-abo'],
+	['text-do-i-need-a-polished-presentation', 'text-no-this-isn-t-a-conference-stage-and-it-s-pretty'],
+	['text-can-i-share-something-i-m-building', 'text-yes-guests-often-beta-launch-or-beta-test-their-'],
+	['text-does-it-cost-anything-to-present', 'text-no-presenting-is-free'],
+	['text-what-happens-after-i-apply', 'text-we-read-every-application-and-you-ll-hear-back-f'],
+	['text-will-my-session-be-shared', 'text-no-sessions-are-recorded-for-members-only-everyt'],
+	['text-how-do-i-join-the-dozen', 'text-you-don-t-apply-to-join-guests-present-first-and'],
+] as const;
 const siteUrl = new URL('/', Astro.site || Astro.url.origin).href;
-const structuredData = {
+const organizationData = {
 	'@context': 'https://schema.org',
 	'@type': 'Organization',
 	name: config?.seo?.title || 'Digital Growth Society',
@@ -46,8 +76,21 @@ const structuredData = {
 	foundingDate: '2019',
 	slogan: 'Greater together.',
 	description,
-	member: memberNames.map((name) => ({ '@type': 'Person', name })),
+	member: members,
 };
+const faqData = {
+	'@context': 'https://schema.org',
+	'@type': 'FAQPage',
+	mainEntity: faqDefinitions.map(([questionKey, answerKey]) => ({
+		'@type': 'Question',
+		name: textValue(faqTexts, questionKey),
+		acceptedAnswer: {
+			'@type': 'Answer',
+			text: textValue(faqTexts, answerKey),
+		},
+	})),
+};
+const structuredData = [organizationData, faqData];
 ---
 
 <Base

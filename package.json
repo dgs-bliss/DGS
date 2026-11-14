@@ -23,7 +23,8 @@
     "permalink:watch": "node scripts/watch-permalinks-to-filenames.mjs",
     "tina:fullcheck": "python3 scripts/tina-fullcheck.py",
     "astro:demo-lock": "pnpm dgs:homepage-lock",
-    "dgs:homepage-lock": "node scripts/validate-dgs-homepage-lock.mjs"
+    "dgs:homepage-lock": "node scripts/validate-dgs-homepage-lock.mjs",
+    "test:apply-form": "node --experimental-strip-types --test tests/apply-form.test.ts"
   },
   "dependencies": {
     "@fontsource-variable/newsreader": "^5.3.0",

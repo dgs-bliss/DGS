@@ -95,9 +95,11 @@ export default defineConfig({
 		// package's source `.astro` files on the first request.
 		ssr: {
 			noExternal: ['@tinacms/astro', '@tinacms/bridge', 'tinacms'],
+			external: ['cloudflare:workers', 'cloudflare:sockets'],
 		},
 		build: {
 			rollupOptions: {
+				external: ['cloudflare:workers', 'cloudflare:sockets'],
 				onwarn(warning, warn) {
 					if (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
 						warning.exporter === 'tinacms/dist/client') {

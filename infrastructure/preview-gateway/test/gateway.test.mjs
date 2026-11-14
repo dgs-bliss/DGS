@@ -23,7 +23,9 @@ test("maps a selected branch to its isolated Cloudflare Preview alias", () => {
   assert.deepEqual(selectionFromBranch("feature/client-copy"), {
     mode: "pull-request",
     branch: "feature/client-copy",
-    targetOrigin: "https://feature-client-copy-dgs.almira2022t.workers.dev"
+    targetOrigins: [
+      "https://feature-client-copy-dgs.digitalgrowthsociety.workers.dev"
+    ]
   });
 });
 
@@ -31,13 +33,13 @@ test("falls back to stable staging when no branch is selected", () => {
   assert.deepEqual(selectionFromBranch(null), {
     mode: "staging-fallback",
     branch: "staging",
-    targetOrigin: "https://staging.digitalgrowthsociety.org"
+    targetOrigins: ["https://staging.digitalgrowthsociety.org"]
   });
 });
 
 test("rewrites technical Worker origins to the branded preview origin", () => {
-  const target = "https://feature-client-copy-dgs.almira2022t.workers.dev";
-  const source = `${target}/about https://dgs.almira2022t.workers.dev/tina-content-proxy`;
+  const target = "https://feature-client-copy-dgs.digitalgrowthsociety.workers.dev";
+  const source = `${target}/about https://dgs.digitalgrowthsociety.workers.dev/tina-content-proxy`;
   assert.equal(
     rewriteText(source, target),
     "https://preview.digitalgrowthsociety.org/about https://preview.digitalgrowthsociety.org/tina-content-proxy"

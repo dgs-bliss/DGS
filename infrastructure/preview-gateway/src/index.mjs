@@ -1,5 +1,5 @@
 const FALLBACK_ORIGIN = "https://staging.digitalgrowthsociety.org";
-const WORKERS_ACCOUNT_SUBDOMAIN = "almira2022t";
+const WORKERS_ACCOUNT_SUBDOMAINS = ["digitalgrowthsociety"];
 const WORKER_NAME = "dgs";
 const PUBLIC_ORIGIN = "https://preview.digitalgrowthsociety.org";
 const BRANCH_COOKIE = "dgs_preview_branch";
@@ -37,7 +37,7 @@ export function selectionFromBranch(branch) {
     return {
       mode: "staging-fallback",
       branch: "staging",
-      targetOrigin: FALLBACK_ORIGIN
+      targetOrigins: [FALLBACK_ORIGIN]
     };
   }
 
@@ -45,7 +45,9 @@ export function selectionFromBranch(branch) {
   return {
     mode: "pull-request",
     branch,
-    targetOrigin: `https://${alias}.${WORKERS_ACCOUNT_SUBDOMAIN}.workers.dev`
+    targetOrigins: WORKERS_ACCOUNT_SUBDOMAINS.map(
+      (subdomain) => `https://${alias}.${subdomain}.workers.dev`
+    )
   };
 }
 
@@ -113,19 +115,23 @@ function shouldRewrite(contentType) {
 }
 
 export function rewriteText(text, targetOrigin) {
-  return text
-    .split(targetOrigin).join(PUBLIC_ORIGIN)
-    .split(`https://${WORKER_NAME}.${WORKERS_ACCOUNT_SUBDOMAIN}.workers.dev`).join(PUBLIC_ORIGIN);
+  let rewritten = text.split(targetOrigin).join(PUBLIC_ORIGIN);
+  for (const subdomain of WORKERS_ACCOUNT_SUBDOMAINS) {
+    rewritten = rewritten
+      .split(`https://${WORKER_NAME}.${subdomain}.workers.dev`)
+      .join(PUBLIC_ORIGIN);
+  }
+  return rewritten;
 }
 
-async function proxyResponse(upstream, selection) {
+async function proxyResponse(upstream, selection, targetOrigin) {
   const headers = new Headers(upstream.headers);
   headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
   headers.set("X-DGS-Preview-Mode", selection.mode);
   headers.set("X-DGS-Preview-Branch", selection.branch);
 
   const location = headers.get("Location");
-  if (location) headers.set("Location", rewriteText(location, selection.targetOrigin));
+  if (location) headers.set("Location", rewriteText(location, targetOrigin));
 
   const contentType = headers.get("Content-Type") || "";
   if (!shouldRewrite(contentType) || upstream.body === null) {
@@ -136,7 +142,7 @@ async function proxyResponse(upstream, selection) {
     });
   }
 
-  const text = rewriteText(await upstream.text(), selection.targetOrigin);
+  const text = rewriteText(await upstream.text(), targetOrigin);
   headers.delete("Content-Encoding");
   headers.delete("Content-Length");
   headers.delete("ETag");
@@ -181,22 +187,42 @@ export default {
     const selection = selectionForRequest(request, incomingUrl);
     if (incomingUrl.pathname === "/__preview/status") return statusResponse(selection);
 
-    const targetUrl = new URL(incomingUrl.pathname + incomingUrl.search, selection.targetOrigin);
     const headers = new Headers(request.headers);
     headers.delete("Host");
     headers.set("X-Forwarded-Host", incomingUrl.host);
     headers.set("X-Forwarded-Proto", "https");
 
-    const upstreamRequest = new Request(targetUrl, {
-      method: request.method,
-      headers,
-      body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
-      redirect: "manual"
-    });
+    const requestBody =
+      request.method === "GET" || request.method === "HEAD"
+        ? undefined
+        : await request.arrayBuffer();
+    let upstream = null;
+    let targetOrigin = null;
 
-    try {
-      return proxyResponse(await fetch(upstreamRequest), selection);
-    } catch {
+    for (const origin of selection.targetOrigins) {
+      const targetUrl = new URL(incomingUrl.pathname + incomingUrl.search, origin);
+      const upstreamRequest = new Request(targetUrl, {
+        method: request.method,
+        headers,
+        body: requestBody === undefined ? undefined : requestBody.slice(0),
+        redirect: "manual"
+      });
+
+      try {
+        const candidate = await fetch(upstreamRequest);
+        const missingWorker =
+          candidate.status === 404 &&
+          (candidate.headers.get("Content-Type") || "").startsWith("text/plain");
+        if (missingWorker && origin !== selection.targetOrigins.at(-1)) continue;
+        upstream = candidate;
+        targetOrigin = origin;
+        break;
+      } catch {
+        continue;
+      }
+    }
+
+    if (!upstream || !targetOrigin) {
       return new Response("The requested preview is temporarily unavailable.", {
         status: 503,
         headers: {
@@ -206,5 +232,7 @@ export default {
         }
       });
     }
+
+    return proxyResponse(upstream, selection, targetOrigin);
   }
 };

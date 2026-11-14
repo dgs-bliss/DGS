@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+
+const title = 'Thank You | Digital Growth Society';
+const description = 'Thank you for contacting Digital Growth Society. We have received your inquiry.';
+---
+
+<Base title={title} description={description} noindex={true} nofollow={true}>
+  <main id="main-content" class="thank-you-page">
+    <section class="thank-you-card" aria-labelledby="thank-you-title">
+      <p class="thank-you-eyebrow">Digital Growth Society</p>
+      <div class="thank-you-mark" aria-hidden="true">✓</div>
+      <h1 id="thank-you-title">Thank you for getting in touch!</h1>
+      <p>
+        We have received your inquiry and will respond to you within 24 hours. For urgent inquiries please call us on one of the telephone numbers below.
+      </p>
+      <a class="thank-you-link" href="/">Return to the homepage</a>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .thank-you-page {
+    min-height: 68vh;
+    padding: clamp(64px, 10vw, 120px) 24px;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 15% 15%, rgba(31, 78, 140, 0.11), transparent 38%),
+      #f5f8fc;
+    color: #0a2240;
+  }
+
+  .thank-you-card {
+    box-sizing: border-box;
+    width: min(100%, 760px);
+    padding: clamp(40px, 7vw, 72px);
+    border: 1px solid #dadfe3;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(10, 34, 64, 0.1);
+    text-align: center;
+  }
+
+  .thank-you-eyebrow {
+    margin: 0 0 22px;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #1f4e8c;
+  }
+
+  .thank-you-mark {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #0a2240;
+    color: #ffffff;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: clamp(42px, 7vw, 68px);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+  }
+
+  .thank-you-card > p:not(.thank-you-eyebrow) {
+    max-width: 610px;
+    margin: 24px auto 0;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.75;
+    color: #5a6474;
+  }
+
+  .thank-you-link {
+    margin-top: 34px;
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    border: 2px solid #0a2240;
+    background: #0a2240;
+    color: #ffffff;
+    font-family: 'Public Sans', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .thank-you-link:hover,
+  .thank-you-link:focus-visible {
+    background: #ffffff;
+    color: #0a2240;
+  }
+
+  .thank-you-link:focus-visible {
+    outline: 3px solid #1f4e8c;
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .thank-you-page {
+      padding: 40px 16px;
+    }
+
+    .thank-you-card {
+      padding: 38px 22px;
+    }
+  }
+</style>

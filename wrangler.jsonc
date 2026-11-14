@@ -7,7 +7,7 @@
 	"compatibility_date": "2026-10-19",
 	"compatibility_flags": ["nodejs_compat"],
 	"vars": {
-		"PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+		"PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGBBbs1BKG0QA2Zq",
 		"SMTP_HOST": "mail.blissdrive.net",
 		"SMTP_PORT": "587",
 		"SMTP_USERNAME": "applications@digitalgrowthsociety.org",
@@ -34,7 +34,7 @@
 	},
 	"previews": {
 		"vars": {
-			"PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+			"PUBLIC_TURNSTILE_SITE_KEY": "0x4AAAAAAGBBbs1BKG0QA2Zq",
 			"SMTP_HOST": "mail.blissdrive.net",
 			"SMTP_PORT": "587",
 			"SMTP_USERNAME": "applications@digitalgrowthsociety.org",

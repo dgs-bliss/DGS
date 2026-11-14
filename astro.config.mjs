@@ -95,6 +95,7 @@ export default defineConfig({
 		// package's source `.astro` files on the first request.
 		ssr: {
 			noExternal: ['@tinacms/astro', '@tinacms/bridge', 'tinacms'],
+			external: ['cloudflare:workers', 'cloudflare:sockets'],
 		},
 		build: {
 			rollupOptions: {

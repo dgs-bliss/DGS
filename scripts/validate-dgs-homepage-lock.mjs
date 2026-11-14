@@ -34,7 +34,8 @@ for (const key of ['sections', 'articles', 'details', 'forms']) {
   if (currentCounts[key] !== authorityCounts[key]) fail(`current ${key} count ${currentCounts[key]} != authority ${authorityCounts[key]}`);
 }
 if (/<header\b|<footer\b/.test(front)) fail('global header/footer leaked into FrontPage.astro');
-if (!front.includes('config?.contactForm?.formspreeEndpoint')) fail('homepage form is not connected to global Formspree configuration');
+if (!front.includes("const formAction = '/api/apply'")) fail('homepage form is not connected to the first-party application endpoint');
+if (/formspree/i.test(front)) fail('homepage form still contains a Formspree dependency');
 
 const homePath = join(root, 'src/content/page/home.mdx');
 const home = matter(readFileSync(homePath, 'utf8')).data;

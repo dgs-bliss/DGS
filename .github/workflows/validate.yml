@@ -38,5 +38,8 @@ jobs:
       - name: Verify homepage authority lock
         run: pnpm dgs:homepage-lock
 
+      - name: Test first-party application form
+        run: pnpm test:apply-form
+
       - name: Build site locally
         run: pnpm build:local

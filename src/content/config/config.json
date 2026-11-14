@@ -12,11 +12,10 @@
     "footerCopyrightSuffix": "A nonprofit mastermind"
   },
   "contactForm": {
-    "formspreeEndpoint": "https://formspree.io/f/xkjjdbok",
     "heading": "Contact us",
-    "description": "Configure a unique Formspree endpoint for this site before enabling submissions.",
+    "description": "Applications are delivered securely to the Digital Growth Society mailbox.",
     "buttonText": "Send Message",
-    "note": "This form remains disabled until its Formspree endpoint is configured.",
+    "note": "A member reads every application.",
     "subject": "Digital Growth Society contact form submission"
   },
   "codeInjection": {

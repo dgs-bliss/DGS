@@ -6,6 +6,14 @@
 	"upload_source_maps": true,
 	"compatibility_date": "2026-10-19",
 	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+		"SMTP_HOST": "mail.blissdrive.net",
+		"SMTP_PORT": "587",
+		"SMTP_USERNAME": "applications@digitalgrowthsociety.org",
+		"APPLY_FROM_EMAIL": "applications@digitalgrowthsociety.org",
+		"APPLY_TO_EMAIL": "applications@digitalgrowthsociety.org"
+	},
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./dist",
@@ -16,6 +24,12 @@
 	},
 	"previews": {
 		"vars": {
+			"PUBLIC_TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+			"SMTP_HOST": "mail.blissdrive.net",
+			"SMTP_PORT": "587",
+			"SMTP_USERNAME": "applications@digitalgrowthsociety.org",
+			"APPLY_FROM_EMAIL": "applications@digitalgrowthsociety.org",
+			"APPLY_TO_EMAIL": "applications@digitalgrowthsociety.org",
 			"CLOUDINARY_CLOUD_NAME": "ljjidst6",
 			"CLOUDINARY_ROOT_FOLDER": "digitalgrowthsociety",
 			"DEPLOY_ADAPTER": "cloudflare",

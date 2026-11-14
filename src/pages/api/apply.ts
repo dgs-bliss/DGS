@@ -172,9 +172,20 @@ export const POST: APIRoute = async ({ request }) => {
   const smtpPassword = envString('SMTP_PASSWORD');
   const rateLimitSalt = envString('RATE_LIMIT_SALT');
   const rateKv = (cloudflareEnv as Record<string, unknown>).SESSION as RateLimitKV | undefined;
-  if (!turnstileSecret || !smtpPassword || !rateLimitSalt || !rateKv) {
-    console.error('DGS application form runtime configuration is incomplete.');
-    return json({ ok: false, message: 'Applications are temporarily unavailable. Please try again later.' }, 503);
+  const missingConfiguration = [
+    !turnstileSecret && 'TURNSTILE_SECRET_KEY',
+    !smtpPassword && 'SMTP_PASSWORD',
+    !rateLimitSalt && 'RATE_LIMIT_SALT',
+    !rateKv && 'SESSION',
+  ].filter(Boolean);
+  if (missingConfiguration.length) {
+    console.error('DGS application form runtime configuration is incomplete.', missingConfiguration);
+    const technicalPreview = new URL(request.url).hostname.endsWith('.workers.dev');
+    return json({
+      ok: false,
+      message: 'Applications are temporarily unavailable. Please try again later.',
+      ...(technicalPreview ? { missingConfiguration } : {}),
+    }, 503);
   }
 
   const ip = clientIp(request);
@@ -190,7 +201,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const key = await hashRateLimitKey(ip, rateLimitSalt);
-  const rate = await consumeHourlyRateLimit(rateKv, key);
+  const rate = await consumeHourlyRateLimit(rateKv!, key);
   if (!rate.allowed) {
     return json(
       { ok: false, message: 'Too many applications were submitted from this connection. Please try again later.' },

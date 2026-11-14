@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { sanitizeGeneratedClient } from './sanitize-generated-client.mjs';
 
@@ -104,6 +104,13 @@ try {
     }
   }
   if (status === 0) {
+    // The Cloudflare adapter mirrors local build secrets into a development-only
+    // file. Remote bindings supply these at runtime, so never retain or deploy it.
+    const generatedDevVars = resolve('dist/server/.dev.vars');
+    if (existsSync(generatedDevVars)) {
+      rmSync(generatedDevVars, { force: true });
+      process.stdout.write('Removed generated dist/server/.dev.vars before artifact scan.\n');
+    }
     const findings = scanDirectory(resolve('dist'));
     if (findings.length) {
       for (const finding of findings) process.stderr.write(`Secret scan failed: ${finding.key} found in ${finding.file}\n`);

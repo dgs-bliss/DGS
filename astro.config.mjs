@@ -99,6 +99,7 @@ export default defineConfig({
 		},
 		build: {
 			rollupOptions: {
+				external: ['cloudflare:workers', 'cloudflare:sockets'],
 				onwarn(warning, warn) {
 					if (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
 						warning.exporter === 'tinacms/dist/client') {

@@ -87,3 +87,14 @@ test('requires a successful Turnstile result for an allowed hostname', async () 
   );
   assert.equal(wrongHost.success, false);
 });
+
+test('accepts Cloudflare test-key responses without applying production hostname rules', async () => {
+  const result = await verifyTurnstile(
+    '1x0000000000000000000000000000000AA',
+    'XXXX.DUMMY.TOKEN.XXXX',
+    '127.0.0.1',
+    ['staging.digitalgrowthsociety.org'],
+    async () => new Response(JSON.stringify({ success: true, hostname: 'example.com', 'error-codes': [] })),
+  );
+  assert.equal(result.success, true);
+});

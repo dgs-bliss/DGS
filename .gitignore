@@ -83,3 +83,4 @@ _hermes-disabled
 .env
 .env.local
 .env.production
+.dev.vars*

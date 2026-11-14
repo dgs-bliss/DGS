@@ -180,12 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
   ].filter(Boolean);
   if (missingConfiguration.length) {
     console.error('DGS application form runtime configuration is incomplete.', missingConfiguration);
-    const technicalPreview = new URL(request.url).hostname.endsWith('.workers.dev');
-    return json({
-      ok: false,
-      message: 'Applications are temporarily unavailable. Please try again later.',
-      ...(technicalPreview ? { missingConfiguration } : {}),
-    }, 503);
+    return json({ ok: false, message: 'Applications are temporarily unavailable. Please try again later.' }, 503);
   }
 
   const ip = clientIp(request);

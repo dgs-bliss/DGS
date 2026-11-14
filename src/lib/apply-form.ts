@@ -167,7 +167,7 @@ export async function verifyTurnstile(
   const hostname = String(result.hostname || '').toLowerCase();
   const testSecret = '1x0000000000000000000000000000000AA';
   const hostnameAllowed = secret === testSecret
-    ? hostname === 'dummy-key-pass'
+    ? true
     : expectedHostnames.map((item) => item.toLowerCase()).includes(hostname);
   return {
     success: result.success === true && hostnameAllowed,

@@ -897,11 +897,7 @@ function link(section: string, key: string, fallback: string): string {
           for (const [name, message] of Object.entries(result.fields || {})) showFieldError(name, message);
           throw new Error(result.message || 'We could not send your application. Please try again.');
         }
-        form.innerHTML = `<div tabindex="-1" data-apply-success style="padding:24px 0"><h2 style="margin:0 0 12px;font-family:'Newsreader',Georgia,serif;font-size:34px;font-weight:400">Application received</h2><p style="margin:0;font-size:18px;line-height:1.6;color:#4E5761"></p></div>`;
-        const success = form.querySelector('[data-apply-success]');
-        const message = success?.querySelector('p');
-        if (message) message.textContent = result.message;
-        if (success instanceof HTMLElement) success.focus();
+        window.location.assign('/thank-you/');
       } catch (error) {
         status.textContent = error instanceof Error ? error.message : 'We could not send your application. Please try again.';
         status.style.color = '#9B1C1C';

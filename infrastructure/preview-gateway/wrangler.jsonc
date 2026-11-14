@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dgs-preview-gateway",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-11-14",
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "preview.digitalgrowthsociety.org",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

@@ -22,9 +22,9 @@
 			"GITHUB_CONTENT_REPO": "dgs-bliss/DGS",
 			"NEXT_PUBLIC_TINA_BRANCH": "staging",
 			"NEXT_PUBLIC_TINA_CLIENT_ID": "256cd137-6a4b-4285-ab65-7bf0687aa753",
-			"NEXT_PUBLIC_TINA_CONTENT_API_URL": "https://dgs.almira2022t.workers.dev/tina-content-proxy",
+			"NEXT_PUBLIC_TINA_CONTENT_API_URL": "https://staging.digitalgrowthsociety.org/tina-content-proxy",
 			"SITE_PROVISION_MODE": "same-site-migration",
-			"SITE_URL": "https://dgs.almira2022t.workers.dev"
+			"SITE_URL": "https://staging.digitalgrowthsociety.org"
 		},
 		"kv_namespaces": [
 			{

@@ -109,7 +109,8 @@ if (!existsSync(join(root, 'scripts/provision-site.mjs'))) fail('scripts/provisi
 if (!existsSync(join(root, 'scripts/install-runtime-env.mjs'))) fail('scripts/install-runtime-env.mjs is required for zero-omission runtime installation.');
 if (!existsSync(join(root, 'scripts/test-runtime-env.mjs'))) fail('scripts/test-runtime-env.mjs is required for runtime-install regression protection.');
 if (!existsSync(join(root, 'site.manifest.example.json'))) fail('site.manifest.example.json is required for repeatable site provisioning.');
-if (!existsSync(join(root, 'scripts/tina-build-safe.mjs'))) fail('scripts/tina-build-safe.mjs is required for direct Cloud schema checks and secret-safe generation.');
+if (!existsSync(join(root, 'scripts/tina-build-safe.mjs'))) fail('scripts/tina-build-safe.mjs is required for branch-correct production admin generation.');
+if (!existsSync(join(root, 'scripts/verify-repository-media-admin.mjs'))) fail('scripts/verify-repository-media-admin.mjs is required to reject local or obsolete media admin builds.');
 if (!existsSync(join(root, 'scripts/sanitize-generated-client.mjs'))) fail('scripts/sanitize-generated-client.mjs is required to keep generated credentials out of source control.');
 if (!existsSync(join(root, 'scripts/validate-dgs-homepage-lock.mjs'))) fail('scripts/validate-dgs-homepage-lock.mjs is required for fail-closed DGS homepage authority validation.');
 if (!existsSync(join(root, 'tests/fixtures/dgs-homepage-authority/authority-manifest.json'))) fail('DGS homepage authority manifest is required.');
@@ -276,8 +277,12 @@ for (const marker of ['INCOMPLETE_SOURCE_NO_TARGET_MODIFICATION_PASS', 'INCOMPLE
   if (!runtimeRegression.includes(marker)) fail(`Runtime regression suite is missing ${marker}.`);
 }
 const tinaBuildSafe = read('scripts/tina-build-safe.mjs');
-for (const marker of ['WORKERS_CI_BRANCH', "!['main', 'staging'].includes(ciBranch)", 'protected-branch cloud checks remain enforced']) {
+for (const marker of ['WORKERS_CI_BRANCH', "!['main', 'staging'].includes(ciBranch)", 'staging.digitalgrowthsociety.org', 'Building Tina production client', 'verify-repository-media-admin.mjs']) {
   if (!tinaBuildSafe.includes(marker)) fail(`Tina build safety wrapper is missing preview-schema marker ${marker}.`);
+}
+const repositoryAdminVerifier = read('scripts/verify-repository-media-admin.mjs');
+for (const marker of ['brand-assets/dgs-homepage', 'NEXT_PUBLIC_TINA_BRANCH', '/api/cloudinary/media', 'REPOSITORY_MEDIA_ADMIN_BUILD_PASS']) {
+  if (!repositoryAdminVerifier.includes(marker)) fail(`Repository media admin verifier is missing ${marker}.`);
 }
 const startup = read('app.mjs');
 if (!/missing required runtime variables/.test(startup) || !/throw new Error/.test(startup)) {
@@ -301,7 +306,7 @@ for (const marker of ['/brand-assets/dgs-homepage/*', 'X-Content-Type-Options: n
 }
 const mediaRoot = join(root, 'public/brand-assets/dgs-homepage');
 if (!existsSync(mediaRoot) || walk(mediaRoot, []).length < 53) fail('Repository media root must preserve the 53 existing DGS assets.');
-const cloudinarySourceMatches = walk(root, []).filter((path) => relative(root, path) !== 'scripts/validate-starter.mjs' && /\.(?:js|mjs|ts|tsx|json|jsonc)$/.test(path) && /CLOUDINARY_|next-tinacms-cloudinary|TinaCloudCloudinaryMediaStore/.test(readFileSync(path, 'utf8')));
+const cloudinarySourceMatches = walk(root, []).filter((path) => !['scripts/validate-starter.mjs', 'scripts/verify-repository-media-admin.mjs'].includes(relative(root, path)) && /\.(?:js|mjs|ts|tsx|json|jsonc)$/.test(path) && /CLOUDINARY_|next-tinacms-cloudinary|TinaCloudCloudinaryMediaStore/.test(readFileSync(path, 'utf8')));
 if (cloudinarySourceMatches.length) fail(`Cloudinary implementation/configuration remains in: ${cloudinarySourceMatches.map((path) => relative(root, path)).join(', ')}.`);
 
 for (const relative of ['tina/__generated__/client.ts', 'tina/__generated__/types.ts', 'tina/__generated__/types.js']) {

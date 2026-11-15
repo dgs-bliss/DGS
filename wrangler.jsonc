@@ -12,7 +12,16 @@
 		"SMTP_PORT": "587",
 		"SMTP_USERNAME": "applications@digitalgrowthsociety.org",
 		"APPLY_FROM_EMAIL": "applications@digitalgrowthsociety.org",
-		"APPLY_TO_EMAIL": "applications@digitalgrowthsociety.org"
+		"APPLY_TO_EMAIL": "applications@digitalgrowthsociety.org",
+		"CLOUDINARY_CLOUD_NAME": "ljjidst6",
+		"CLOUDINARY_ROOT_FOLDER": "digitalgrowthsociety",
+		"DEPLOY_ADAPTER": "cloudflare",
+		"GITHUB_CONTENT_REPO": "dgs-bliss/DGS",
+		"NEXT_PUBLIC_TINA_BRANCH": "staging",
+		"NEXT_PUBLIC_TINA_CLIENT_ID": "256cd137-6a4b-4285-ab65-7bf0687aa753",
+		"NEXT_PUBLIC_TINA_CONTENT_API_URL": "https://staging.digitalgrowthsociety.org/tina-content-proxy",
+		"SITE_PROVISION_MODE": "same-site-migration",
+		"SITE_URL": "https://staging.digitalgrowthsociety.org"
 	},
 	"kv_namespaces": [
 		{

@@ -296,6 +296,24 @@ for (const marker of ['cloudflare:workers', 'requestedClientId !== configuredCli
   if (!cloudinaryRoute.includes(marker)) fail(`Cloudinary media route is missing authorization/isolation marker ${marker}.`);
 }
 
+const wranglerConfig = read('wrangler.jsonc');
+const stableVarsBlock = wranglerConfig.match(/"vars"\s*:\s*\{([\s\S]*?)\n\s*\},\s*\n\s*"kv_namespaces"/)?.[1] || '';
+const previewVarsBlock = wranglerConfig.match(/"previews"[\s\S]*?"vars"\s*:\s*\{([\s\S]*?)\n\s*\},\s*\n\s*"kv_namespaces"/)?.[1] || '';
+for (const name of [
+  'CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_ROOT_FOLDER',
+  'NEXT_PUBLIC_TINA_BRANCH',
+  'NEXT_PUBLIC_TINA_CLIENT_ID',
+  'NEXT_PUBLIC_TINA_CONTENT_API_URL',
+  'SITE_URL',
+]) {
+  const valuePattern = new RegExp(`"${name}"\\s*:\\s*"([^"]+)"`);
+  const stableValue = stableVarsBlock.match(valuePattern)?.[1] || '';
+  const previewValue = previewVarsBlock.match(valuePattern)?.[1] || '';
+  if (!stableValue) fail(`Stable Cloudflare vars are missing ${name}; preview-only runtime identity breaks the stable Tina media route.`);
+  if (stableValue !== previewValue) fail(`Stable and preview Cloudflare vars disagree for ${name}.`);
+}
+
 for (const relative of ['tina/__generated__/client.ts', 'tina/__generated__/types.ts', 'tina/__generated__/types.js']) {
   const generatedPath = join(root, relative);
   // tina/__generated__ is intentionally gitignored and does not exist in a clean

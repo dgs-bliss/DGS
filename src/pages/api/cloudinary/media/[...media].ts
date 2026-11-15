@@ -46,7 +46,11 @@ async function authorized(context: APIContext, url: URL) {
   };
 
   const user = await isAuthorized(reqForTina as any, configuredClientId);
-  return Boolean(user && (user as any).verified);
+  // `isAuthorized` only returns a value after Tina Identity validates the
+  // bearer token against this exact project. Current Identity responses do
+  // not consistently expose the legacy top-level `verified` property, so
+  // requiring it rejects valid authenticated editors on the deployed admin.
+  return Boolean(user);
 }
 
 function cleanPath(value: string | null | undefined) {

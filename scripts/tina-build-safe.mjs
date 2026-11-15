@@ -38,11 +38,17 @@ if (!trustedWorkersBuildEnv) {
   }
   Object.assign(siteEnv, fileEnv);
 }
+if (process.env.WORKERS_CI === '1' && ciBranch) {
+  siteEnv.NEXT_PUBLIC_TINA_BRANCH = ciBranch;
+}
 if (previewBuild) {
   const previewOrigin = 'https://preview.digitalgrowthsociety.org';
-  siteEnv.NEXT_PUBLIC_TINA_BRANCH = ciBranch;
   siteEnv.NEXT_PUBLIC_TINA_CONTENT_API_URL = `${previewOrigin}/tina-content-proxy`;
   siteEnv.SITE_URL = previewOrigin;
+} else if (process.env.WORKERS_CI === '1' && ciBranch === 'staging') {
+  const stagingOrigin = 'https://staging.digitalgrowthsociety.org';
+  siteEnv.NEXT_PUBLIC_TINA_CONTENT_API_URL = `${stagingOrigin}/tina-content-proxy`;
+  siteEnv.SITE_URL = stagingOrigin;
 }
 
 const protectedEntries = Object.entries(siteEnv).filter(([key, value]) =>
@@ -103,17 +109,20 @@ try {
   } else if (previewBuild) {
     // Tina indexes Git branches asynchronously. A schema-changing feature branch
     // can otherwise deadlock its own preview before the remote schema catches up.
-    // Protected staging/main builds still require the direct cloud schema check.
-    process.stdout.write(`Building Tina preview for ${ciBranch}; protected-branch cloud checks remain enforced.\n`);
+    process.stdout.write(`Building Tina preview for ${ciBranch}.\n`);
     status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
   } else {
-    const cloudEnv = { ...siteEnv, TINA_DIRECT_CLOUD_CHECK: '1' };
-    status = run(['tinacms', 'build', '--noTelemetry', '-c', 'node --version'], cloudEnv);
+    // A merged branch can be available to Cloudflare before Tina's asynchronous
+    // schema index catches up. Build the same production Tina client used by the
+    // proven preview; --local is intentionally forbidden here.
+    process.stdout.write(`Building Tina production client for ${ciBranch || siteEnv.NEXT_PUBLIC_TINA_BRANCH}.\n`);
+    status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
   }
   if (status === 0) {
     sanitizeGeneratedClient();
     const tokenFreeEnv = withoutTinaTokens(siteEnv);
     if (!local) status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version'], tokenFreeEnv);
+    if (status === 0 && !local) status = run(['node', 'scripts/verify-repository-media-admin.mjs'], tokenFreeEnv);
     if (status === 0) {
       sanitizeGeneratedClient();
       status = run(['astro', 'build'], tokenFreeEnv);

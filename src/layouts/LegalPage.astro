@@ -1,0 +1,198 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const title = frontmatter.title;
+const description = frontmatter.description;
+---
+
+<Base title={`${title} | Digital Growth Society`} description={description}>
+  <main id="main-content" class="dgs-policy-page">
+    <header class="dgs-policy-hero">
+      <div class="dgs-policy-hero__inner">
+        <a class="dgs-policy-back" href="/">← Back to Digital Growth Society</a>
+        <p class="dgs-policy-eyebrow">Policy library</p>
+        <h1>{title}</h1>
+        <p>{description}</p>
+      </div>
+    </header>
+
+    <article class="dgs-policy-content">
+      <slot />
+    </article>
+  </main>
+</Base>
+
+<style>
+  .dgs-policy-page {
+    background: #f5f8fc;
+    color: #0a2240;
+  }
+
+  .dgs-policy-hero {
+    padding: clamp(64px, 8vw, 108px) 24px clamp(50px, 6vw, 76px);
+    background:
+      radial-gradient(circle at 85% 5%, rgba(255, 255, 255, 0.13), transparent 34%),
+      #0a2240;
+    color: #ffffff;
+  }
+
+  .dgs-policy-hero__inner,
+  .dgs-policy-content {
+    width: min(100%, 920px);
+    margin: 0 auto;
+  }
+
+  .dgs-policy-back {
+    display: inline-flex;
+    margin-bottom: 48px;
+    color: #ffffff;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+  }
+
+  .dgs-policy-back:hover,
+  .dgs-policy-back:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+  .dgs-policy-back:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 5px;
+  }
+
+  .dgs-policy-eyebrow {
+    margin: 0 0 16px;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b9d3f2;
+  }
+
+  .dgs-policy-hero h1 {
+    max-width: 800px;
+    margin: 0;
+    font-family: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+    font-size: clamp(46px, 8vw, 82px);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    color: #ffffff;
+  }
+
+  .dgs-policy-hero__inner > p:last-child {
+    max-width: 760px;
+    margin: 26px 0 0;
+    color: #d7e2ee;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.7;
+  }
+
+  .dgs-policy-content {
+    box-sizing: border-box;
+    margin-top: clamp(32px, 5vw, 58px);
+    margin-bottom: clamp(64px, 9vw, 112px);
+    padding: clamp(30px, 5vw, 66px);
+    border: 1px solid #dadfe3;
+    background: #ffffff;
+    box-shadow: 0 24px 70px rgba(10, 34, 64, 0.08);
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.78;
+  }
+
+  .dgs-policy-content :global(h2) {
+    margin: 52px 0 18px;
+    font-family: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+    font-size: clamp(30px, 4vw, 42px);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: #0a2240;
+  }
+
+  .dgs-policy-content :global(h2:first-of-type) {
+    margin-top: 38px;
+  }
+
+  .dgs-policy-content :global(h3) {
+    margin: 34px 0 12px;
+    font-size: 20px;
+    line-height: 1.35;
+    color: #1f4e8c;
+  }
+
+  .dgs-policy-content :global(p) {
+    margin: 0 0 18px;
+    color: #34445a;
+  }
+
+  .dgs-policy-content :global(ul),
+  .dgs-policy-content :global(ol) {
+    margin: 0 0 24px;
+    padding-left: 26px;
+    color: #34445a;
+  }
+
+  .dgs-policy-content :global(li) {
+    margin: 9px 0;
+    padding-left: 5px;
+  }
+
+  .dgs-policy-content :global(strong) {
+    color: #0a2240;
+  }
+
+  .dgs-policy-content :global(a) {
+    color: #1f4e8c;
+    font-weight: 700;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    overflow-wrap: anywhere;
+  }
+
+  .dgs-policy-content :global(a:hover) {
+    color: #0a2240;
+  }
+
+  .dgs-policy-content :global(a:focus-visible) {
+    outline: 3px solid #1f4e8c;
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 700px) {
+    .dgs-policy-hero {
+      padding-inline: 18px;
+    }
+
+    .dgs-policy-back {
+      margin-bottom: 36px;
+    }
+
+    .dgs-policy-content {
+      width: auto;
+      margin-right: 16px;
+      margin-left: 16px;
+      padding: 28px 22px;
+      font-size: 16px;
+    }
+
+    .dgs-policy-content :global(h2) {
+      margin-top: 42px;
+    }
+  }
+</style>

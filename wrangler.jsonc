@@ -40,8 +40,6 @@
 			"SMTP_USERNAME": "applications@digitalgrowthsociety.org",
 			"APPLY_FROM_EMAIL": "applications@digitalgrowthsociety.org",
 			"APPLY_TO_EMAIL": "applications@digitalgrowthsociety.org",
-			"CLOUDINARY_CLOUD_NAME": "ljjidst6",
-			"CLOUDINARY_ROOT_FOLDER": "digitalgrowthsociety",
 			"DEPLOY_ADAPTER": "cloudflare",
 			"GITHUB_CONTENT_REPO": "dgs-bliss/DGS",
 			"NEXT_PUBLIC_TINA_BRANCH": "staging",

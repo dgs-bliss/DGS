@@ -63,10 +63,6 @@ function getSiteUrl() {
 
 // https://astro.build/config
 export default defineConfig({
-	// Tina Cloudinary media uploads are protected by Tina auth. Disable Astro's
-	// generic Origin check so multipart/form-data uploads return JSON instead
-	// of Astro's plain-text "Cross-site" rejection on cPanel/LiteSpeed.
-	security: { checkOrigin: false },
 	site: getSiteUrl(),
 	output: 'server',
 	adapter: await getAdapter(),

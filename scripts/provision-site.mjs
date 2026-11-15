@@ -36,7 +36,6 @@ try {
 const required = [
   'mode', 'siteName', 'siteOwner', 'siteDescription', 'siteUrl', 'deployAdapter',
   'tinaClientId', 'tinaToken', 'tinaBranch', 'githubContentRepo',
-  'cloudinaryCloudName', 'cloudinaryApiKey', 'cloudinaryApiSecret', 'cloudinaryRootFolder',
 ];
 const missing = required.filter((key) => !String(site[key] ?? '').trim());
 if (missing.length) stop(`missing required manifest keys: ${missing.join(', ')}.`);
@@ -53,7 +52,6 @@ if (parsedSiteUrl.protocol !== 'https:' || parsedSiteUrl.origin !== site.siteUrl
   stop('siteUrl must be a valid HTTPS origin without credentials, path, query, or fragment.');
 }
 if (!/^[^/\s]+\/[^/\s]+$/.test(site.githubContentRepo)) stop('githubContentRepo must use owner/repository format.');
-if (!/^[A-Za-z0-9._-]+$/.test(site.cloudinaryRootFolder)) stop('cloudinaryRootFolder may contain only letters, numbers, dot, underscore, and dash.');
 if (site.formspreeEndpoint && !/^https:\/\/formspree\.io\/f\/[A-Za-z0-9_-]+$/.test(site.formspreeEndpoint)) stop('formspreeEndpoint is malformed.');
 
 const values = Object.values(site).map((value) => String(value ?? '').toLowerCase());
@@ -66,7 +64,6 @@ if (site.mode === 'independent') {
     ['siteUrl', /boilerplate\.blissdrive\.net/i],
     ['tinaClientId', /^40bc8cd1-d0fe-4061-b99c-d91be2de59e0$/i],
     ['githubContentRepo', /^bliss-tinacms\/boilerplate$/i],
-    ['cloudinaryRootFolder', /^(boilerplate|starter|default)$/i],
   ];
   for (const [key, pattern] of forbidden) {
     if (pattern.test(String(site[key]))) stop(`${key} reuses the source boilerplate identity; create an isolated value for this site.`);
@@ -85,10 +82,6 @@ const envLines = [
   `TINA_TOKEN=${site.tinaToken}`,
   `NEXT_PUBLIC_TINA_BRANCH=${site.tinaBranch}`,
   `GITHUB_CONTENT_REPO=${site.githubContentRepo}`,
-  `CLOUDINARY_CLOUD_NAME=${site.cloudinaryCloudName}`,
-  `CLOUDINARY_API_KEY=${site.cloudinaryApiKey}`,
-  `CLOUDINARY_API_SECRET=${site.cloudinaryApiSecret}`,
-  `CLOUDINARY_ROOT_FOLDER=${site.cloudinaryRootFolder}`,
   `NEXT_PUBLIC_TINA_CONTENT_API_URL=${contentApiUrl}`,
   '',
 ];

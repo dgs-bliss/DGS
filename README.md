@@ -42,7 +42,7 @@ Set `SITE_URL` to your production URL — it feeds the sitemap, RSS, and OpenGra
 
 ### Before your first deploy: TinaCloud credentials
 
-The default `pnpm build` compiles the CMS against TinaCloud, so it needs the complete per-site runtime configuration. Create a project at [app.tina.io](https://app.tina.io), then provision the site as described below. The required variables include `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN`, `NEXT_PUBLIC_TINA_BRANCH`, `GITHUB_CONTENT_REPO`, all four Cloudinary variables (`CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and a unique `CLOUDINARY_ROOT_FOLDER`), and `NEXT_PUBLIC_TINA_CONTENT_API_URL`.
+The default `pnpm build` compiles the CMS against TinaCloud, so it needs the complete per-site runtime configuration. Create a project at [app.tina.io](https://app.tina.io), then provision the site as described below. The required variables include `NEXT_PUBLIC_TINA_CLIENT_ID`, `TINA_TOKEN`, `NEXT_PUBLIC_TINA_BRANCH`, `GITHUB_CONTENT_REPO`, and `NEXT_PUBLIC_TINA_CONTENT_API_URL`. Media is repository-backed at `public/brand-assets/dgs-homepage`; no external media-provider credentials are used.
 
 To build without TinaCloud — a purely local/offline build with no auth — run `pnpm build:local` instead, which skips the cloud checks.
 
@@ -56,10 +56,9 @@ cloud/live-accepted deployment. The protected rollback baseline tag remains
 than moving or rewriting that tag.
 
 Each new publisher must have its own repository, Tina project/client ID and token,
-site URL, and Cloudinary folder. A shared Cloudinary account is supported, but use
-a unique root folder and preferably a named per-site API key. Never copy the
+site URL, and repository media root. Never copy the
 boilerplate's `.env`, generated `public/admin/` directory, Tina identity,
-Formspree form, or source-site API key/secret pair.
+Formspree form, or source-site credentials.
 
 1. Clone this repository into the new site's repository.
 2. Copy `site.manifest.example.json` to an ignored file such as
@@ -80,7 +79,7 @@ Formspree form, or source-site API key/secret pair.
    Provisioning writes a mode-`0600`, ignored `.env` and updates the neutral site
    identity in `src/content/config/config.json`. It refuses placeholders and, for
    independent sites, rejects the source boilerplate's domain, Tina project,
-   repository and Cloudinary root folder.
+   repository and media identity.
 
 4. Commit the new site's source and push its Tina branch. Wait for Tina Cloud to
    index that branch, then run `pnpm build`. The production build intentionally
@@ -101,7 +100,8 @@ Formspree form, or source-site API key/secret pair.
    startup entry fails closed if any required runtime variable is absent. For
    media, require an authenticated Media Manager list request returning `200`,
    visible controls with no error state, and a reversible UI upload/delete; a
-   direct Cloudinary SDK test does not certify the Tina Media Manager.
+   direct filesystem/API test does not certify the Tina Media Manager. Upload and
+   delete must create reversible, versioned Git changes on the connected branch.
 
 Before committing the source boilerplate itself, follow the complete
 `TINA-MIGRATION-GOLD.md` source-release gate and run `pnpm validate:starter`,

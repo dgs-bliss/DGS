@@ -24,10 +24,6 @@ export const REQUIRED_RUNTIME_KEYS = [
   'NEXT_PUBLIC_TINA_BRANCH',
   'NEXT_PUBLIC_TINA_CONTENT_API_URL',
   'GITHUB_CONTENT_REPO',
-  'CLOUDINARY_CLOUD_NAME',
-  'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET',
-  'CLOUDINARY_ROOT_FOLDER',
 ];
 
 function fail(message) {
@@ -63,14 +59,6 @@ export function validateRuntimeEnv(text) {
     /^(?:change[-_ ]?me|placeholder|example|todo|your[-_]|xxx)/i.test(String(values.get(key) || '').trim()),
   );
   if (placeholders.length) fail(`Canonical runtime environment contains placeholder variables: ${placeholders.join(', ')}`);
-
-  const folder = String(values.get('CLOUDINARY_ROOT_FOLDER')).trim();
-  if (/^(?:media|uploads?|images?|assets?|cloudinary|default|root)$/i.test(folder)) {
-    fail('CLOUDINARY_ROOT_FOLDER must be unique to the destination site, not a generic folder.');
-  }
-  if (!/^[A-Za-z0-9][A-Za-z0-9_./-]*$/.test(folder)) {
-    fail('CLOUDINARY_ROOT_FOLDER contains unsupported characters.');
-  }
 
   return values;
 }

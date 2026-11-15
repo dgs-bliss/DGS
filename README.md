@@ -93,15 +93,16 @@ Formspree form, or source-site credentials.
    release. Never reuse a generated admin bundle from another site.
 7. Complete the logged-in Tina acceptance test: collections and SEO fields,
    existing multi-category selections, a temporary dynamic Category, Save →
-   public reflection → exact reversion, navigation references, media upload and
-   cleanup, and the live Formspree endpoint. Before restart, run
+   public reflection → exact reversion, navigation references, repository-media
+   list/select, and the live Formspree endpoint. Before restart, run
    `SITE_ENV_FILE=/absolute/path/to/application-root/.env pnpm validate:site`
    against the exact active and retained-rollback host environments. The Node
-   startup entry fails closed if any required runtime variable is absent. For
-   media, require an authenticated Media Manager list request returning `200`,
-   visible controls with no error state, and a reversible UI upload/delete; a
-   direct filesystem/API test does not certify the Tina Media Manager. Upload and
-   delete must create reversible, versioned Git changes on the connected branch.
+   startup entry fails closed if any required runtime variable is absent. DGS
+   self-hosts the Tina content endpoint, so repository media is intentionally
+   static in the editor: upload/new-folder/delete controls must be absent. Add or
+   remove images under `public/brand-assets/dgs-homepage` on a Git branch and
+   merge them through the documented pull-request workflow. No third-party media
+   provider is permitted.
 
 Before committing the source boilerplate itself, follow the complete
 `TINA-MIGRATION-GOLD.md` source-release gate and run `pnpm validate:starter`,

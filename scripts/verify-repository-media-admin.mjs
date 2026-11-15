@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const fail = (message) => {
@@ -28,6 +28,19 @@ for (const [label, value] of required) {
 }
 for (const forbidden of ['/api/cloudinary/media', 'TinaCloudCloudinaryMediaStore']) {
   if (bundle.includes(forbidden)) fail(`obsolete external media implementation remains: ${forbidden}`);
+}
+
+const mediaRoot = resolve('public/brand-assets/dgs-homepage');
+const collectMediaFiles = (directory) => readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+  const path = resolve(directory, entry.name);
+  if (entry.isDirectory()) return collectMediaFiles(path);
+  return statSync(path).isFile() ? [entry.name] : [];
+});
+if (!existsSync(mediaRoot)) fail('repository media directory is missing');
+const mediaFiles = collectMediaFiles(mediaRoot);
+if (mediaFiles.length < 53) fail(`repository media snapshot is incomplete: found ${mediaFiles.length} files`);
+for (const filename of mediaFiles) {
+  if (!bundle.includes(filename)) fail(`static repository media is missing from the generated admin: ${filename}`);
 }
 
 process.stdout.write('REPOSITORY_MEDIA_ADMIN_BUILD_PASS\n');

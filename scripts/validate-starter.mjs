@@ -290,8 +290,8 @@ if (!/missing required runtime variables/.test(startup) || !/throw new Error/.te
 }
 
 const tinaConfig = read('tina/config.ts');
-if (!/media\s*:\s*\{[\s\S]*?tina\s*:\s*\{[\s\S]*?publicFolder\s*:\s*["']public["'][\s\S]*?mediaRoot\s*:\s*["']brand-assets\/dgs-homepage["'][\s\S]*?static\s*:\s*false/.test(tinaConfig)) {
-  fail('Tina must use writable repository-backed media at public/brand-assets/dgs-homepage.');
+if (!/media\s*:\s*\{[\s\S]*?tina\s*:\s*\{[\s\S]*?publicFolder\s*:\s*["']public["'][\s\S]*?mediaRoot\s*:\s*["']brand-assets\/dgs-homepage["'][\s\S]*?static\s*:\s*true/.test(tinaConfig)) {
+  fail('Self-hosted Tina must use static repository media at public/brand-assets/dgs-homepage.');
 }
 if (/loadCustomStore|next-tinacms-cloudinary|TinaCloudCloudinaryMediaStore/i.test(tinaConfig)) {
   fail('External media stores are forbidden; DGS media must remain repository-backed.');

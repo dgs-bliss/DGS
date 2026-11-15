@@ -1,5 +1,6 @@
 import type { APIContext } from "astro";
 import { v2 as cloudinary } from "cloudinary";
+import { env as cloudflareEnv } from "cloudflare:workers";
 import { isAuthorized } from "@tinacms/auth";
 
 export const prerender = false;
@@ -11,10 +12,17 @@ function json(data: unknown, status = 200) {
   });
 }
 
-function getCredentials() {
-  const cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
-  const api_key = process.env.CLOUDINARY_API_KEY;
-  const api_secret = process.env.CLOUDINARY_API_SECRET;
+function runtimeEnv(_context: APIContext, name: string) {
+  const binding = (cloudflareEnv as Record<string, unknown>)[name];
+  if (typeof binding === "string" && binding.trim()) return binding.trim();
+  const fallback = process.env[name];
+  return typeof fallback === "string" ? fallback.trim() : "";
+}
+
+function getCredentials(context: APIContext) {
+  const cloud_name = runtimeEnv(context, "CLOUDINARY_CLOUD_NAME");
+  const api_key = runtimeEnv(context, "CLOUDINARY_API_KEY");
+  const api_secret = runtimeEnv(context, "CLOUDINARY_API_SECRET");
 
   if (!cloud_name || !api_key || !api_secret) {
     throw new Error("Missing Cloudinary environment variables");
@@ -23,17 +31,21 @@ function getCredentials() {
   cloudinary.config({ cloud_name, api_key, api_secret, secure: true });
 }
 
-async function authorized(request: Request, url: URL) {
+async function authorized(context: APIContext, url: URL) {
   if (process.env.NODE_ENV === "development") return true;
+
+  const configuredClientId = runtimeEnv(context, "NEXT_PUBLIC_TINA_CLIENT_ID");
+  const requestedClientId = url.searchParams.get("clientID")?.trim() || "";
+  if (!configuredClientId || requestedClientId !== configuredClientId) return false;
 
   const reqForTina = {
     query: Object.fromEntries(url.searchParams.entries()),
     headers: {
-      authorization: request.headers.get("authorization") || undefined,
+      authorization: context.request.headers.get("authorization") || undefined,
     },
   };
 
-  const user = await isAuthorized(reqForTina as any);
+  const user = await isAuthorized(reqForTina as any, configuredClientId);
   return Boolean(user && (user as any).verified);
 }
 
@@ -46,30 +58,30 @@ function directoryPrefix(directory: string | null) {
   return clean ? clean + "/" : "";
 }
 
-function rootPrefix() {
-  const clean = cleanPath(process.env.CLOUDINARY_ROOT_FOLDER || process.env.CLOUDINARY_FOLDER || "");
+function rootPrefix(context: APIContext) {
+  const clean = cleanPath(runtimeEnv(context, "CLOUDINARY_ROOT_FOLDER") || runtimeEnv(context, "CLOUDINARY_FOLDER"));
   if (!clean) {
     throw new Error("Missing CLOUDINARY_ROOT_FOLDER. Each clone must use its own isolated media folder.");
   }
   return clean + "/";
 }
 
-function withRootPrefix(path: string) {
-  const root = rootPrefix();
+function withRootPrefix(context: APIContext, path: string) {
+  const root = rootPrefix(context);
   const clean = cleanPath(path);
   if (!root) return clean;
   if (!clean) return root.replace(/\/$/, "");
   return clean.startsWith(root) ? clean : root + clean;
 }
 
-function stripRootPrefix(publicId: string) {
-  const root = rootPrefix();
+function stripRootPrefix(context: APIContext, publicId: string) {
+  const root = rootPrefix(context);
   return root && publicId.startsWith(root) ? publicId.slice(root.length) : publicId;
 }
 
-function itemFromCloudinary(asset: any) {
+function itemFromCloudinary(context: APIContext, asset: any) {
   const publicId = asset.public_id || "";
-  const displayId = stripRootPrefix(publicId);
+  const displayId = stripRootPrefix(context, publicId);
   const parts = displayId.split("/");
   const filename = parts.pop() || displayId || publicId;
   const directory = parts.length ? "/" + parts.join("/") : "/";
@@ -89,15 +101,16 @@ function itemFromCloudinary(asset: any) {
   };
 }
 
-export async function GET({ request }: APIContext) {
+export async function GET(context: APIContext) {
   try {
+    const { request } = context;
     const url = new URL(request.url);
-    if (!(await authorized(request, url))) return json({ message: "Unauthorized" }, 401);
-    getCredentials();
+    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    getCredentials(context);
 
     const directory = url.searchParams.get("directory") || "";
     const offset = url.searchParams.get("offset") || undefined;
-    const prefix = withRootPrefix(directory);
+    const prefix = withRootPrefix(context, directory);
 
     let search = cloudinary.search
       .expression(prefix ? `resource_type:image AND public_id:${prefix}*` : "resource_type:image")
@@ -108,7 +121,7 @@ export async function GET({ request }: APIContext) {
     const result = await search.execute();
 
     return json({
-      items: (result.resources || []).map(itemFromCloudinary),
+      items: (result.resources || []).map((asset: any) => itemFromCloudinary(context, asset)),
       offset: result.next_cursor || null,
     });
   } catch (e: any) {
@@ -117,11 +130,12 @@ export async function GET({ request }: APIContext) {
   }
 }
 
-export async function POST({ request }: APIContext) {
+export async function POST(context: APIContext) {
   try {
+    const { request } = context;
     const url = new URL(request.url);
-    if (!(await authorized(request, url))) return json({ message: "Unauthorized" }, 401);
-    getCredentials();
+    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    getCredentials(context);
 
     const form = await request.formData();
     const file = form.get("file");
@@ -133,7 +147,7 @@ export async function POST({ request }: APIContext) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const dataUri = `data:${file.type || "application/octet-stream"};base64,${buffer.toString("base64")}`;
-    const publicId = withRootPrefix(directory + filename.replace(/\.[^.]+$/, ""));
+    const publicId = withRootPrefix(context, directory + filename.replace(/\.[^.]+$/, ""));
 
     const result = await cloudinary.uploader.upload(dataUri, {
       public_id: publicId,
@@ -148,14 +162,15 @@ export async function POST({ request }: APIContext) {
   }
 }
 
-export async function DELETE({ request, params }: APIContext) {
+export async function DELETE(context: APIContext) {
   try {
+    const { request, params } = context;
     const url = new URL(request.url);
-    if (!(await authorized(request, url))) return json({ message: "Unauthorized" }, 401);
-    getCredentials();
+    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    getCredentials(context);
 
     const mediaParam = Array.isArray((params as any).media) ? (params as any).media.join("/") : String((params as any).media || "");
-    const publicId = withRootPrefix(decodeURIComponent(mediaParam));
+    const publicId = withRootPrefix(context, decodeURIComponent(mediaParam));
     if (!publicId) return json({ message: "Missing media id" }, 400);
 
     const result = await cloudinary.uploader.destroy(publicId, { resource_type: "image" });

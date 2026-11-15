@@ -5,6 +5,10 @@ import { resolve, join } from 'node:path';
 import { sanitizeGeneratedClient } from './sanitize-generated-client.mjs';
 
 const local = process.argv.includes('--local');
+const ciBranch = String(process.env.WORKERS_CI_BRANCH || process.env.CF_PAGES_BRANCH || '').trim();
+const previewBuild = process.env.WORKERS_CI === '1'
+  && ciBranch
+  && !['main', 'staging'].includes(ciBranch);
 
 const parseEnvFile = (path) => {
   if (!existsSync(path)) return {};
@@ -33,6 +37,12 @@ if (!trustedWorkersBuildEnv) {
     if (/^(TINA_|NEXT_PUBLIC_TINA_|PUBLIC_TINA_)/.test(key)) delete siteEnv[key];
   }
   Object.assign(siteEnv, fileEnv);
+}
+if (previewBuild) {
+  const previewOrigin = 'https://preview.digitalgrowthsociety.org';
+  siteEnv.NEXT_PUBLIC_TINA_BRANCH = ciBranch;
+  siteEnv.NEXT_PUBLIC_TINA_CONTENT_API_URL = `${previewOrigin}/tina-content-proxy`;
+  siteEnv.SITE_URL = previewOrigin;
 }
 
 const protectedEntries = Object.entries(siteEnv).filter(([key, value]) =>
@@ -90,6 +100,12 @@ let status = 1;
 try {
   if (local) {
     status = run(['tinacms', 'build', '--local', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
+  } else if (previewBuild) {
+    // Tina indexes Git branches asynchronously. A schema-changing feature branch
+    // can otherwise deadlock its own preview before the remote schema catches up.
+    // Protected staging/main builds still require the direct cloud schema check.
+    process.stdout.write(`Building Tina preview for ${ciBranch}; protected-branch cloud checks remain enforced.\n`);
+    status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
   } else {
     const cloudEnv = { ...siteEnv, TINA_DIRECT_CLOUD_CHECK: '1' };
     status = run(['tinacms', 'build', '--noTelemetry', '-c', 'node --version'], cloudEnv);

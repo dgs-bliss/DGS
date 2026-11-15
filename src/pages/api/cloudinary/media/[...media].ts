@@ -5,10 +5,10 @@ import { isAuthorized } from "@tinacms/auth";
 
 export const prerender = false;
 
-function json(data: unknown, status = 200) {
+function json(data: unknown, status = 200, extraHeaders: Record<string, string> = {}) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { "content-type": "application/json; charset=utf-8" },
+    headers: { "content-type": "application/json; charset=utf-8", ...extraHeaders },
   });
 }
 
@@ -17,6 +17,48 @@ function runtimeEnv(_context: APIContext, name: string) {
   if (typeof binding === "string" && binding.trim()) return binding.trim();
   const fallback = process.env[name];
   return typeof fallback === "string" ? fallback.trim() : "";
+}
+
+const MEDIA_SESSION_COOKIE = "dgs_tina_media_session";
+const MEDIA_SESSION_SECONDS = 15 * 60;
+
+function mediaSessionCookie(request: Request) {
+  const cookies = request.headers.get("cookie") || "";
+  for (const part of cookies.split(";")) {
+    const [name, ...value] = part.trim().split("=");
+    if (name === MEDIA_SESSION_COOKIE) return value.join("=");
+  }
+  return "";
+}
+
+async function mediaSessionSignature(context: APIContext, payload: string) {
+  const secret = runtimeEnv(context, "CLOUDINARY_API_SECRET");
+  if (!secret) return "";
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
+  return Buffer.from(signature).toString("base64url");
+}
+
+async function createMediaSession(context: APIContext, clientId: string) {
+  const expires = Math.floor(Date.now() / 1000) + MEDIA_SESSION_SECONDS;
+  const payload = `${clientId}.${expires}`;
+  const signature = await mediaSessionSignature(context, payload);
+  return `${expires}.${signature}`;
+}
+
+async function hasValidMediaSession(context: APIContext, clientId: string) {
+  const value = mediaSessionCookie(context.request);
+  const [expiresText, signature] = value.split(".");
+  const expires = Number(expiresText);
+  if (!expires || !signature || expires <= Math.floor(Date.now() / 1000)) return false;
+  const expected = await mediaSessionSignature(context, `${clientId}.${expires}`);
+  return Boolean(expected && signature === expected);
 }
 
 function getCredentials(context: APIContext) {
@@ -31,26 +73,71 @@ function getCredentials(context: APIContext) {
   cloudinary.config({ cloud_name, api_key, api_secret, secure: true });
 }
 
-async function authorized(context: APIContext, url: URL) {
-  if (process.env.NODE_ENV === "development") return true;
+type AuthorizationResult = "authorized" | "denied" | "unavailable";
+
+async function validateContentAccess(
+  context: APIContext,
+  clientId: string,
+  authorization: string,
+): Promise<AuthorizationResult> {
+  const branch = runtimeEnv(context, "NEXT_PUBLIC_TINA_BRANCH") || runtimeEnv(context, "TINA_BRANCH") || "main";
+  const endpoint = `https://content.tinajs.io/2.4/content/${encodeURIComponent(clientId)}/github/${encodeURIComponent(branch)}`;
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        authorization,
+        "content-type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({ query: "query MediaAuthorizationCheck { getCollections { name } }" }),
+    });
+
+    if (response.status === 401 || response.status === 403) return "denied";
+    if (!response.ok) return "unavailable";
+    const payload = await response.json() as { errors?: unknown[] };
+    return payload.errors?.length ? "denied" : "authorized";
+  } catch (error) {
+    console.error("Tina content authorization check failed", error);
+    return "unavailable";
+  }
+}
+
+async function authorized(context: APIContext, url: URL): Promise<AuthorizationResult> {
+  if (process.env.NODE_ENV === "development") return "authorized";
 
   const configuredClientId = runtimeEnv(context, "NEXT_PUBLIC_TINA_CLIENT_ID");
   const requestedClientId = url.searchParams.get("clientID")?.trim() || "";
-  if (!configuredClientId || requestedClientId !== configuredClientId) return false;
+  if (!configuredClientId || requestedClientId !== configuredClientId) return "denied";
+
+  // A successful authenticated list request establishes a short-lived,
+  // HttpOnly, same-origin media session. Upload and delete requests can use it
+  // if Tina Identity transiently rejects the otherwise valid bearer token.
+  if (await hasValidMediaSession(context, configuredClientId)) return "authorized";
+
+  const authorization = context.request.headers.get("authorization")?.trim() || "";
+  if (!authorization) return "denied";
 
   const reqForTina = {
     query: Object.fromEntries(url.searchParams.entries()),
     headers: {
-      authorization: context.request.headers.get("authorization") || undefined,
+      authorization,
     },
   };
 
-  const user = await isAuthorized(reqForTina as any, configuredClientId);
-  // `isAuthorized` only returns a value after Tina Identity validates the
-  // bearer token against this exact project. Current Identity responses do
-  // not consistently expose the legacy top-level `verified` property, so
-  // requiring it rejects valid authenticated editors on the deployed admin.
-  return Boolean(user);
+  try {
+    const user = await isAuthorized(reqForTina as any, configuredClientId);
+    if (user) return "authorized";
+  } catch (error) {
+    console.warn("Tina Identity authorization check failed; trying content access", error);
+  }
+
+  // Tina's authenticated content API is the second authoritative check for
+  // this exact project and branch. This handles valid editor sessions that
+  // the currentUser endpoint intermittently rejects without making the media
+  // route public or trusting a browser-supplied role.
+  return validateContentAccess(context, configuredClientId, authorization);
 }
 
 function cleanPath(value: string | null | undefined) {
@@ -109,7 +196,9 @@ export async function GET(context: APIContext) {
   try {
     const { request } = context;
     const url = new URL(request.url);
-    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    const authorization = await authorized(context, url);
+    if (authorization === "denied") return json({ message: "Unauthorized" }, 401);
+    if (authorization === "unavailable") return json({ message: "Authorization service unavailable" }, 503);
     getCredentials(context);
 
     const directory = url.searchParams.get("directory") || "";
@@ -124,10 +213,19 @@ export async function GET(context: APIContext) {
     if (offset) search = search.next_cursor(offset);
     const result = await search.execute();
 
-    return json({
-      items: (result.resources || []).map((asset: any) => itemFromCloudinary(context, asset)),
-      offset: result.next_cursor || null,
-    });
+    const clientId = runtimeEnv(context, "NEXT_PUBLIC_TINA_CLIENT_ID");
+    const mediaSession = await createMediaSession(context, clientId);
+    return json(
+      {
+        items: (result.resources || []).map((asset: any) => itemFromCloudinary(context, asset)),
+        offset: result.next_cursor || null,
+      },
+      200,
+      {
+        "set-cookie": `${MEDIA_SESSION_COOKIE}=${mediaSession}; Path=/api/cloudinary/media; Max-Age=${MEDIA_SESSION_SECONDS}; HttpOnly; Secure; SameSite=Strict`,
+        "cache-control": "no-store",
+      },
+    );
   } catch (e: any) {
     console.error("Cloudinary media GET failed", e);
     return json({ message: "Cloudinary media GET failed", e: e?.message || String(e) }, 500);
@@ -138,7 +236,9 @@ export async function POST(context: APIContext) {
   try {
     const { request } = context;
     const url = new URL(request.url);
-    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    const authorization = await authorized(context, url);
+    if (authorization === "denied") return json({ message: "Unauthorized" }, 401);
+    if (authorization === "unavailable") return json({ message: "Authorization service unavailable" }, 503);
     getCredentials(context);
 
     const form = await request.formData();
@@ -170,7 +270,9 @@ export async function DELETE(context: APIContext) {
   try {
     const { request, params } = context;
     const url = new URL(request.url);
-    if (!(await authorized(context, url))) return json({ message: "Unauthorized" }, 401);
+    const authorization = await authorized(context, url);
+    if (authorization === "denied") return json({ message: "Unauthorized" }, 401);
+    if (authorization === "unavailable") return json({ message: "Authorization service unavailable" }, 503);
     getCredentials(context);
 
     const mediaParam = Array.isArray((params as any).media) ? (params as any).media.join("/") : String((params as any).media || "");

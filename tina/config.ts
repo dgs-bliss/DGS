@@ -35,7 +35,10 @@ export default defineConfig({
     tina: {
       publicFolder: "public",
       mediaRoot: "brand-assets/dgs-homepage",
-      static: false,
+      // DGS self-hosts its content endpoint. Tina's writable repo-media API is
+      // TinaCloud-only, so keep the editor's library read-only and source every
+      // image from this repository. New assets follow the documented Git PR flow.
+      static: true,
     },
   },
   build: {

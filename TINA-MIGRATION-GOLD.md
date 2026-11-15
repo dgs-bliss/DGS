@@ -87,7 +87,7 @@ Missing destination identity must fail validation. It must never fall back to th
 - Explicit destination values must override stale Passenger-inherited values.
 - Validate runtime site URL, Tina client ID, branch, repository, content endpoint, repository media root, and form configuration as one destination identity contract.
 - Treat the exact deployed application-root environment as a release artifact. Before every restart/cutover, run `SITE_ENV_FILE=/absolute/path/to/live/.env pnpm validate:site` against that file; repeat for every retained rollback runtime that may be activated. A local source `.env`, build-time environment, or prior-release check cannot certify the live Passenger environment.
-- Require repo-based Tina media with `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, and `static: false`. External media-provider packages, routes, variables, or credentials are forbidden for DGS.
+- Require self-host-compatible repo-based Tina media with `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, and `static: true`. The authenticated editor may list and select these repository assets; new files are added on a Git branch through the documented pull-request workflow. External media-provider packages, routes, variables, or credentials are forbidden for DGS.
 - The Node startup entry must fail closed before importing the server bundle when any required runtime variable is missing. Never let a partially configured site start and defer discovery to Tina Media Manager.
 - Keep production `.env` outside release archives, ignored by Git, and mode `0600`.
 
@@ -109,7 +109,7 @@ This gate exists because a migration previously deployed incomplete runtime inpu
 5. The installer must write every target atomically at mode `0600`, read each file back, and prove secret-safe value equality with the canonical source. Output variable names/status only—never values.
 6. After installation, run `SITE_ENV_FILE=<exact-target> pnpm validate:site` separately for active and every rollback target. Any missing target, missing value, mismatch, wrong mode, placeholder, or validation failure is a hard stop.
 7. The Node startup entry must independently fail before importing the server bundle when required runtime configuration is incomplete. This second barrier is mandatory even when installation passed.
-8. After restart, perform the authenticated Tina Media Manager list/UI/upload/delete proof. Upload and delete must produce reversible, versioned Git changes; direct filesystem/API success does not satisfy this gate.
+8. After restart, perform the authenticated Tina Media Manager list/select proof. Confirm that upload/delete controls are absent because the self-hosted library is intentionally static. Add and remove any disposable media through a Git branch and pull request, proving reversible, versioned Git changes and exact cleanup.
 9. Record `SUPPLIED_CREDENTIAL_INSTALL_PASS` only after installer tests, target read-back equality, exact-target validation, startup enforcement, and authenticated live proof all pass. Without that record, the migration is `BLOCKED` and must not be described as stable or complete.
 
 The repository validator and regression suite must require this section, the `runtime:install` command, the installer implementation, and negative tests proving that an incomplete source cannot modify a target or start the application.
@@ -163,9 +163,9 @@ The renderer and migration adapter must support and test paragraphs, headings, b
 
 Each independent publication requires its own repository, Tina project/branch, canonical origin, repository media root, and form-delivery configuration.
 
-- Repository-media preflight: require Tina `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, `static: false`, all 53 existing DGS assets, safe response headers, and no external media adapter, route, dependency, or runtime variable.
-- Repository-media live proof: open a real image field in the authenticated Tina admin, open its Media Manager, visibly confirm the existing assets plus `Upload`/`New Folder` controls, upload one disposable asset, and prove the connected branch receives the versioned Git addition. Delete the asset through the same UI, prove the versioned Git deletion, and confirm no test asset remains.
-- A direct filesystem/API upload/delete, a generated admin bundle, or a reachable `/admin/` route does **not** certify Tina Media Manager.
+- Repository-media preflight: require Tina `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, `static: true`, all 53 existing DGS assets, safe response headers, and no external media adapter, route, dependency, or runtime variable.
+- Repository-media live proof: open a real image field in the authenticated Tina admin, open its Media Manager, visibly confirm the existing repository assets, select one without an error, and confirm `Upload`/`New Folder`/delete controls are absent. Prove new-media handling separately through the documented Git branch and pull-request flow, then remove the disposable asset through Git and confirm exact cleanup.
+- A generated admin bundle or reachable `/admin/` route alone does **not** certify Tina Media Manager; the authenticated list/select UI and versioned Git workflow both require proof.
 - Formspree proof: read the live DOM action and POST to that exact endpoint only when authorized; require `200 {"ok":true}`.
 - A login page, console access, unauthenticated `401`, or configured string alone is not integration proof.
 
@@ -202,7 +202,7 @@ Coverage must be derived from the configured Tina collection set and equal the e
 7. prove authenticated backend restoration;
 8. prove cache-busted public restoration and marker absence.
 
-Also test editable SEO title/description/canonical/robots/Open Graph/Twitter/JSON-LD as applicable; one Page and one Blog article; `MULTICAT-LOCK`; author resolution; Navigation; header/footer logos; repository-backed rich-text image upload; and form delivery when authorized. Restoration outranks starting another test. Any incomplete login, save, public mapping, cleanup, or restoration is `BLOCKED`, not done.
+Also test editable SEO title/description/canonical/robots/Open Graph/Twitter/JSON-LD as applicable; one Page and one Blog article; `MULTICAT-LOCK`; author resolution; Navigation; header/footer logos; repository-backed rich-text image selection plus Git-PR asset addition; and form delivery when authorized. Restoration outranks starting another test. Any incomplete login, save, public mapping, cleanup, or restoration is `BLOCKED`, not done.
 
 ### 14. Verify routes, metadata, assets, and visuals
 
@@ -286,7 +286,7 @@ This is the explicit postmortem required by the latest migration. It is not a su
 | HNT-007 | The responsive menu breakpoint and open-state CSS disagreed; keyboard, Escape, outside click, link selection and resize behavior were not proven. | Fixed the 1024px contract, open-state CSS and header behavior; added a Playwright interaction matrix. | Test both sides of the breakpoint with pointer and keyboard interactions, ARIA state, focus return, resize reset and overflow assertions. | `7c0aa23` |
 | HNT-008 | Early acceptance covered only selected pages and collections, leaving public template families and CMS collection transactions unproven. | Added fullcheck, Publisher admin gate, demo-lock routes and source-aligned implementations, then expanded all public templates. | Inventory every template family and collection before implementation; require a positive and controlled-negative case for each. | `68f3b27`, `ca65df7` |
 | HNT-009 | Author and category edit islands were not fully covered and their editable/public data paths could diverge. | Added author/category island queries, fullcheck coverage and Publisher cases. | Require an authenticated island POST and save → backend → public → exact restore proof for every configured collection. | `8eb3a7c` |
-| HNT-010 | Repository media could false-pass without proving the real authenticated editor and connected Git path. | Required the fixed DGS media root, all existing assets, safe headers, authenticated list and reversible UI upload/delete. | Direct filesystem/API proof is forbidden; require versioned Git addition/deletion and exact cleanup. | `a96a2b6` |
+| HNT-010 | Repository media could false-pass without proving the real authenticated editor and connected Git path. | Required the fixed DGS media root, all existing assets, safe headers, authenticated list/select proof and the separate Git-PR asset workflow. | Self-hosted Tina must use static repo media; require versioned Git addition/deletion and exact cleanup without a third-party media provider. | `a96a2b6` |
 | HNT-011 | The homepage had drifted from the supplied source in DOM, geometry, typography and imagery. | Restored the source-locked homepage structure and CSS. | Authority-first immutable fixtures, same-viewport screenshot/DOM/computed-geometry checks and a homepage negative mutation are mandatory. | `2386fae` |
 | HNT-012 | Tina’s “View on site” shortcut could generate the wrong frontend path. | Added a canonical route mapper and executable shortcut-route tests. | Every collection must have deterministic route mapping tests, including normalization and unknown-input failure. | `2386fae` |
 | HNT-013 | About, contact and team informational pages used redesigned wrappers, spacing or imagery instead of the supplied templates. | Restored source hierarchy, assets and page-specific geometry. | Lock every informational family independently at desktop/mobile; shared styling may not replace family-specific authority. | `496c9c9` |
@@ -356,7 +356,7 @@ The repository validator must reject at minimum:
 - a content proxy that rewrites typed Tina data or elevates anonymous requests;
 - malformed/non-origin `SITE_URL` and localhost production metadata;
 - an incorrect repository media root, external media adapter/configuration, or inherited form endpoint;
-- missing existing media assets, missing safe media headers, or acceptance that omits authenticated Media Manager list/UI plus reversible versioned Git changes;
+- missing existing media assets, missing safe media headers, or acceptance that omits authenticated Media Manager list/select UI plus reversible Git-PR media changes;
 - missing release/fullcheck commands and this process document.
 - omission of any `FAILURE-DERIVED EXECUTION GATES` marker or a demo/fullcheck/deploy script required to execute an applicable marker.
 
@@ -396,7 +396,7 @@ Immediately before restarting or switching the production application, validate 
 SITE_ENV_FILE=/absolute/path/to/application-root/.env pnpm validate:site
 ```
 
-After restart, reopen a real Tina image field and complete the authenticated Media Manager list plus reversible UI upload/delete proof. Require versioned Git addition/deletion and exact cleanup; do not substitute a direct filesystem/API test.
+After restart, reopen a real Tina image field and complete the authenticated Media Manager list/select proof with no writable controls or self-hosted-media error. Require versioned Git addition/deletion and exact cleanup through a branch and pull request; do not introduce an external media provider.
 
 ## Final release record
 
@@ -412,7 +412,7 @@ Record, without exposing secrets:
 - MULTICAT, SEO, repository-backed rich-text/media, and form-delivery results;
 - exact active/rollback host-environment validation and repository-media configuration result;
 - fail-closed result for an incorrect media root or reintroduced external provider;
-- authenticated Media Manager list status, visible controls/error absence, reversible UI upload/delete, and post-delete absence;
+- authenticated Media Manager list/select status, writable-control absence, self-hosted-error absence, reversible Git-PR addition/deletion, and post-delete absence;
 - route/asset/metadata/browser results;
 - rollback archive integrity;
 - temporary marker/upload cleanup and exact restoration.

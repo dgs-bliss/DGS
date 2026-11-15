@@ -65,7 +65,7 @@ The complete `HNT-001` through `HNT-054` problem → solution → prevention →
 | HNT-007 | Responsive navigation breakpoint/interactions were broken or unproven. | Fixed CSS/behavior and added pointer/keyboard tests. | Breakpoint, ARIA, focus, resize and overflow interaction matrix. | `7c0aa23` |
 | HNT-008 | Template and collection acceptance coverage was incomplete. | Expanded public-family and collection gates. | Complete inventory with positive and negative case per family/collection. | `68f3b27`, `ca65df7` |
 | HNT-009 | Author/category edit islands lacked complete proof. | Added queries, fullcheck and Publisher cases. | Authenticated island and reversible public save proof per collection. | `8eb3a7c` |
-| HNT-010 | Cloudinary could false-pass without full runtime/UI proof. | Required all runtime values and Media Manager list/upload/delete. | Exact active/rollback env plus UI proof; SDK-only forbidden. | `a96a2b6` |
+| HNT-010 | Repository media could false-pass without proving the real authenticated editor and Git change path. | Required the fixed media root plus authenticated Media Manager list/upload/delete. | Require reversible versioned Git changes and exact cleanup; direct filesystem/API proof is forbidden. | `a96a2b6` |
 | HNT-011 | Homepage drifted from source. | Restored exact structure/CSS. | Immutable authority and desktop/mobile DOM/geometry/screenshots. | `2386fae` |
 | HNT-012 | “View on site” generated wrong routes. | Added canonical mapper/tests. | Deterministic collection route tests. | `2386fae` |
 | HNT-013 | Informational pages were redesigned instead of source-locked. | Restored exact wrappers/assets/geometry. | Per-family desktop/mobile authority. | `496c9c9` |

@@ -32,9 +32,10 @@ export default defineConfig({
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
   media: {
-    loadCustomStore: async () => {
-      const pack = await import("next-tinacms-cloudinary");
-      return pack.TinaCloudCloudinaryMediaStore;
+    tina: {
+      publicFolder: "public",
+      mediaRoot: "brand-assets/dgs-homepage",
+      static: false,
     },
   },
   build: {

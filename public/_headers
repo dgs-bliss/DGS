@@ -1,3 +1,7 @@
 /admin/*
   X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: no-store, max-age=0
+
+/brand-assets/dgs-homepage/*
+  X-Content-Type-Options: nosniff
+  Content-Security-Policy: default-src 'none'; img-src 'self' data:; media-src 'self'; style-src 'unsafe-inline'; sandbox

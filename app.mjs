@@ -34,10 +34,6 @@ const requiredRuntime = [
   'TINA_TOKEN',
   'NEXT_PUBLIC_TINA_BRANCH',
   'GITHUB_CONTENT_REPO',
-  'CLOUDINARY_CLOUD_NAME',
-  'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET',
-  'CLOUDINARY_ROOT_FOLDER',
   'NEXT_PUBLIC_TINA_CONTENT_API_URL',
 ];
 const missingRuntime = requiredRuntime.filter((name) => !String(process.env[name] || '').trim());

@@ -73,7 +73,7 @@ The reusable source and each independent clone must not inherit the source publi
 
 - Tina client/project ID, content endpoint, repository, or branch;
 - domain, canonical URL, or analytics identity;
-- Cloudinary folder or API key/secret pair;
+- repository media root or external media-provider identity;
 - Formspree endpoint;
 - logo, favicon, authors, navigation filenames, brand copy, screenshots, or customer assets;
 - generated admin identity, workstation paths, tokens, backup files, or deployment archives.
@@ -85,15 +85,15 @@ Missing destination identity must fail validation. It must never fall back to th
 - Resolve `.env` relative to the startup module/application root, never the process working directory.
 - Prefer the first explicit environment file in this order: `SITE_ENV_FILE`, application-root `.env`, then current-directory `.env` only when intentionally supported.
 - Explicit destination values must override stale Passenger-inherited values.
-- Validate runtime site URL, Tina client ID, branch, repository, content endpoint, Cloudinary folder, and Formspree configuration as one destination identity contract.
+- Validate runtime site URL, Tina client ID, branch, repository, content endpoint, repository media root, and form configuration as one destination identity contract.
 - Treat the exact deployed application-root environment as a release artifact. Before every restart/cutover, run `SITE_ENV_FILE=/absolute/path/to/live/.env pnpm validate:site` against that file; repeat for every retained rollback runtime that may be activated. A local source `.env`, build-time environment, or prior-release check cannot certify the live Passenger environment.
-- Require all four non-empty Cloudinary runtime variables together: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and the site-unique `CLOUDINARY_ROOT_FOLDER`. Missing the root folder is a hard deployment failure even when a direct signed SDK upload/delete succeeds.
+- Require repo-based Tina media with `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, and `static: false`. External media-provider packages, routes, variables, or credentials are forbidden for DGS.
 - The Node startup entry must fail closed before importing the server bundle when any required runtime variable is missing. Never let a partially configured site start and defer discovery to Tina Media Manager.
 - Keep production `.env` outside release archives, ignored by Git, and mode `0600`.
 
 ### 4A. ZERO-OMISSION SUPPLIED-CREDENTIAL INSTALLATION GATE
 
-This gate exists because a migration previously received the required Cloudinary values but deployed an incomplete runtime. **It is mandatory on every migration and cannot be replaced by a verbal confirmation, checklist tick, local build, direct SDK test, or later troubleshooting.**
+This gate exists because a migration previously deployed incomplete runtime inputs. **It is mandatory on every migration and cannot be replaced by a verbal confirmation, checklist tick, local build, direct API test, or later troubleshooting.**
 
 1. Treat every user-supplied account, key, token, folder, endpoint, domain, repository, branch, and deployment path as migration input that must be consumed. Do not ask for it again while it remains securely available.
 2. Build one protected canonical source environment from the supplied values. Do not manually retype or selectively copy individual variables during deployment.
@@ -105,11 +105,11 @@ This gate exists because a migration previously received the required Cloudinary
      --target /absolute/path/rollback-app/.env
    ```
 
-4. The installer must fail before modifying any target unless the source contains every required variable, including the indivisible Cloudinary set: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and unique `CLOUDINARY_ROOT_FOLDER`.
+4. The installer must fail before modifying any target unless the source contains every required Tina, repository, origin, and deployment variable. Repository media requires no external-provider credentials.
 5. The installer must write every target atomically at mode `0600`, read each file back, and prove secret-safe value equality with the canonical source. Output variable names/status only—never values.
-6. After installation, run `SITE_ENV_FILE=<exact-target> pnpm validate:site` separately for active and every rollback target. Any missing target, missing value, mismatch, wrong mode, placeholder, generic Cloudinary folder, or validation failure is a hard stop.
+6. After installation, run `SITE_ENV_FILE=<exact-target> pnpm validate:site` separately for active and every rollback target. Any missing target, missing value, mismatch, wrong mode, placeholder, or validation failure is a hard stop.
 7. The Node startup entry must independently fail before importing the server bundle when required runtime configuration is incomplete. This second barrier is mandatory even when installation passed.
-8. After restart, perform the authenticated Tina Media Manager list/UI/upload/delete proof. Direct Cloudinary SDK success does not satisfy this gate.
+8. After restart, perform the authenticated Tina Media Manager list/UI/upload/delete proof. Upload and delete must produce reversible, versioned Git changes; direct filesystem/API success does not satisfy this gate.
 9. Record `SUPPLIED_CREDENTIAL_INSTALL_PASS` only after installer tests, target read-back equality, exact-target validation, startup enforcement, and authenticated live proof all pass. Without that record, the migration is `BLOCKED` and must not be described as stable or complete.
 
 The repository validator and regression suite must require this section, the `runtime:install` command, the installer implementation, and negative tests proving that an incomplete source cannot modify a target or start the application.
@@ -123,7 +123,7 @@ The repository validator and regression suite must require this section, the `ru
 - **Do not assume from the default account, organization, repository, key, or token shown after login.** Enumerate the organizations available to the supplied Tina account and deliberately select the organization that owns the destination project.
 - For Bliss Drive publisher migrations, check **`bliss-tinacms’s Organization` instead of `Bliss Drive’s Organization`**. The `Bliss Drive` login may be an Admin collaborator while the project is owned by the `bliss-tinacms` organization. An empty project list in `Bliss Drive’s Organization` does **not** prove that the supplied account has no projects.
 - For `heraldnewstoday`, explicitly select **`bliss-tinacms’s Organization`**, where the project lives, and verify the existing **`heraldnewstoday`** project before making any project-access conclusion.
-- Double-check the supplied Tina login, selected organization, project name/client ID, connected GitHub account and repository, branch, API keys, content token, Cloudinary credentials/folder, Formspree endpoint, cPanel account/domain, and deployment paths against the provided tracker, secret store, repository environment, and live service UI. Compare secret values with masked fingerprints or equality checks; never print them.
+- Double-check the supplied Tina login, selected organization, project name/client ID, connected GitHub account and repository, branch, content token, repository media root, form-delivery settings, domain, and deployment paths against the provided tracker, secret store, repository environment, and live service UI. Compare secret values with masked fingerprints or equality checks; never print them.
 - A login landing in the wrong organization, one failed request, an empty default view, or a missing local credential helper is not evidence that the resource was not provided. Search all approved provided sources and switch to the verified owner organization before reporting `BLOCKED`.
 - Never create a replacement account, project, repository, API key, token, form, media folder, or deployment target merely because the first/default selection is empty. Use the provided resources and verify their identity and permissions first.
 - Record positive evidence for each identity contract: exact organization, project/client ID, connected repository, branch, and successful authorized query. If evidence conflicts, stop and reconcile it instead of guessing.
@@ -157,15 +157,15 @@ Then run generation, sanitize generated clients, commit/push, wait for Tina Clou
 
 ### 8. Preserve rich-text fidelity
 
-The renderer and migration adapter must support and test paragraphs, headings, bold/italic text, links, escaped characters, ordered/unordered lists, embeds, and inline Cloudinary images. Verify one real article through authenticated edit, public rendering at the exact media URL, exact document restoration, and media cleanup.
+The renderer and migration adapter must support and test paragraphs, headings, bold/italic text, links, escaped characters, ordered/unordered lists, embeds, and inline repository media. Verify one real article through authenticated edit, public rendering at the exact media URL, exact document restoration, and media cleanup.
 
 ### 9. Isolate external services per site
 
-Each independent publication requires its own repository, Tina project/branch, canonical origin, Cloudinary root folder, and Formspree form. Prefer a named per-site Cloudinary key even when the account is shared.
+Each independent publication requires its own repository, Tina project/branch, canonical origin, repository media root, and form-delivery configuration.
 
-- Cloudinary preflight: validate the exact active and retained-rollback application-root environments and require the four-variable set `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and `CLOUDINARY_ROOT_FOLDER`; the root folder must be unique to the site.
-- Cloudinary live proof: open a real image field in the authenticated Tina admin, open its Media Manager, require the browser's authenticated `GET /api/cloudinary/media` to return `200`, require no Cloudinary error state, and visibly confirm `Upload`/`New Folder` controls or assets. Then perform a reversible authenticated UI upload, route deletion, and independent post-delete absence check.
-- A direct Cloudinary SDK upload/delete, an unauthenticated expected `401`, or non-empty credentials alone does **not** certify Tina Media Manager. The list route can still fail with `500` when `CLOUDINARY_ROOT_FOLDER` is absent.
+- Repository-media preflight: require Tina `publicFolder: "public"`, `mediaRoot: "brand-assets/dgs-homepage"`, `static: false`, all 53 existing DGS assets, safe response headers, and no external media adapter, route, dependency, or runtime variable.
+- Repository-media live proof: open a real image field in the authenticated Tina admin, open its Media Manager, visibly confirm the existing assets plus `Upload`/`New Folder` controls, upload one disposable asset, and prove the connected branch receives the versioned Git addition. Delete the asset through the same UI, prove the versioned Git deletion, and confirm no test asset remains.
+- A direct filesystem/API upload/delete, a generated admin bundle, or a reachable `/admin/` route does **not** certify Tina Media Manager.
 - Formspree proof: read the live DOM action and POST to that exact endpoint only when authorized; require `200 {"ok":true}`.
 - A login page, console access, unauthenticated `401`, or configured string alone is not integration proof.
 
@@ -202,7 +202,7 @@ Coverage must be derived from the configured Tina collection set and equal the e
 7. prove authenticated backend restoration;
 8. prove cache-busted public restoration and marker absence.
 
-Also test editable SEO title/description/canonical/robots/Open Graph/Twitter/JSON-LD as applicable; one Page and one Blog article; `MULTICAT-LOCK`; author resolution; Navigation; header/footer logos; rich-text image upload; Cloudinary; and Formspree when authorized. Restoration outranks starting another test. Any incomplete login, save, public mapping, cleanup, or restoration is `BLOCKED`, not done.
+Also test editable SEO title/description/canonical/robots/Open Graph/Twitter/JSON-LD as applicable; one Page and one Blog article; `MULTICAT-LOCK`; author resolution; Navigation; header/footer logos; repository-backed rich-text image upload; and form delivery when authorized. Restoration outranks starting another test. Any incomplete login, save, public mapping, cleanup, or restoration is `BLOCKED`, not done.
 
 ### 14. Verify routes, metadata, assets, and visuals
 
@@ -286,7 +286,7 @@ This is the explicit postmortem required by the latest migration. It is not a su
 | HNT-007 | The responsive menu breakpoint and open-state CSS disagreed; keyboard, Escape, outside click, link selection and resize behavior were not proven. | Fixed the 1024px contract, open-state CSS and header behavior; added a Playwright interaction matrix. | Test both sides of the breakpoint with pointer and keyboard interactions, ARIA state, focus return, resize reset and overflow assertions. | `7c0aa23` |
 | HNT-008 | Early acceptance covered only selected pages and collections, leaving public template families and CMS collection transactions unproven. | Added fullcheck, Publisher admin gate, demo-lock routes and source-aligned implementations, then expanded all public templates. | Inventory every template family and collection before implementation; require a positive and controlled-negative case for each. | `68f3b27`, `ca65df7` |
 | HNT-009 | Author and category edit islands were not fully covered and their editable/public data paths could diverge. | Added author/category island queries, fullcheck coverage and Publisher cases. | Require an authenticated island POST and save → backend → public → exact restore proof for every configured collection. | `8eb3a7c` |
-| HNT-010 | Cloudinary validation could pass without a destination-unique root folder or without proving the actual authenticated Media Manager path. | Required all four runtime values, a unique root, exact active/rollback env checks and authenticated list plus reversible UI upload/delete. | SDK-only media proof is forbidden; validate deployed and rollback runtime environments and the real editor UI. | `a96a2b6` |
+| HNT-010 | Repository media could false-pass without proving the real authenticated editor and connected Git path. | Required the fixed DGS media root, all existing assets, safe headers, authenticated list and reversible UI upload/delete. | Direct filesystem/API proof is forbidden; require versioned Git addition/deletion and exact cleanup. | `a96a2b6` |
 | HNT-011 | The homepage had drifted from the supplied source in DOM, geometry, typography and imagery. | Restored the source-locked homepage structure and CSS. | Authority-first immutable fixtures, same-viewport screenshot/DOM/computed-geometry checks and a homepage negative mutation are mandatory. | `2386fae` |
 | HNT-012 | Tina’s “View on site” shortcut could generate the wrong frontend path. | Added a canonical route mapper and executable shortcut-route tests. | Every collection must have deterministic route mapping tests, including normalization and unknown-input failure. | `2386fae` |
 | HNT-013 | About, contact and team informational pages used redesigned wrappers, spacing or imagery instead of the supplied templates. | Restored source hierarchy, assets and page-specific geometry. | Lock every informational family independently at desktop/mobile; shared styling may not replace family-specific authority. | `496c9c9` |
@@ -355,8 +355,8 @@ The repository validator must reject at minimum:
 - hardcoded category options, users, navigation filenames, and visible fallback content;
 - a content proxy that rewrites typed Tina data or elevates anonymous requests;
 - malformed/non-origin `SITE_URL` and localhost production metadata;
-- non-unique Cloudinary root folders and inherited Formspree endpoints;
-- a missing `CLOUDINARY_ROOT_FOLDER` in the exact deployed or retained-rollback runtime, a startup entry that permits incomplete runtime configuration, or Cloudinary acceptance that omits the authenticated Media Manager list/UI path;
+- an incorrect repository media root, external media adapter/configuration, or inherited form endpoint;
+- missing existing media assets, missing safe media headers, or acceptance that omits authenticated Media Manager list/UI plus reversible versioned Git changes;
 - missing release/fullcheck commands and this process document.
 - omission of any `FAILURE-DERIVED EXECUTION GATES` marker or a demo/fullcheck/deploy script required to execute an applicable marker.
 
@@ -396,7 +396,7 @@ Immediately before restarting or switching the production application, validate 
 SITE_ENV_FILE=/absolute/path/to/application-root/.env pnpm validate:site
 ```
 
-After restart, reopen a real Tina image field and complete the authenticated Media Manager `GET 200` plus reversible UI upload/delete proof. Do not substitute a direct Cloudinary SDK test.
+After restart, reopen a real Tina image field and complete the authenticated Media Manager list plus reversible UI upload/delete proof. Require versioned Git addition/deletion and exact cleanup; do not substitute a direct filesystem/API test.
 
 ## Final release record
 
@@ -409,9 +409,9 @@ Record, without exposing secrets:
 - Tina project/repository/branch equality;
 - source validation and cloud-build results;
 - per-collection Publisher gate results;
-- MULTICAT, SEO, rich-text/media, Cloudinary, and Formspree results;
-- exact active/rollback host-environment validation and the complete four-variable Cloudinary key-presence result (names/status only, never values);
-- startup fail-closed negative-test result for a missing Cloudinary root folder;
+- MULTICAT, SEO, repository-backed rich-text/media, and form-delivery results;
+- exact active/rollback host-environment validation and repository-media configuration result;
+- fail-closed result for an incorrect media root or reintroduced external provider;
 - authenticated Media Manager list status, visible controls/error absence, reversible UI upload/delete, and post-delete absence;
 - route/asset/metadata/browser results;
 - rollback archive integrity;

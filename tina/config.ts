@@ -8,14 +8,16 @@ import { UserCollection } from "./collections/user";
 
 // Your hosting provider likely exposes this as an environment variable
 const branch =
+  // Cloudflare Workers Builds exposes the actual Git ref. It must outrank the
+  // stable fallback so pull-request previews use their own Tina branch/schema.
+  process.env.WORKERS_CI_BRANCH ||
+  process.env.CF_PAGES_BRANCH ||
   process.env.NEXT_PUBLIC_TINA_BRANCH ||
   process.env.TINA_BRANCH ||
   process.env.PUBLIC_TINA_BRANCH ||
   process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_REF ||
   process.env.GITHUB_BRANCH ||
   process.env.VERCEL_GIT_COMMIT_REF ||
-  process.env.WORKERS_CI_BRANCH ||
-  process.env.CF_PAGES_BRANCH ||
   process.env.HEAD ||
   "main";
 
@@ -29,7 +31,7 @@ export default defineConfig({
   // `validate:site` fails before deployment when these are absent.
   clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
-    media: {
+  media: {
     loadCustomStore: async () => {
       const pack = await import("next-tinacms-cloudinary");
       return pack.TinaCloudCloudinaryMediaStore;

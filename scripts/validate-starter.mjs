@@ -275,12 +275,25 @@ const runtimeRegression = read('scripts/test-runtime-env.mjs');
 for (const marker of ['INCOMPLETE_SOURCE_NO_TARGET_MODIFICATION_PASS', 'INCOMPLETE_RUNTIME_STARTUP_BLOCK_PASS', 'SECRET_SAFE_CLI_EVIDENCE_PASS']) {
   if (!runtimeRegression.includes(marker)) fail(`Runtime regression suite is missing ${marker}.`);
 }
+const tinaBuildSafe = read('scripts/tina-build-safe.mjs');
+for (const marker of ['WORKERS_CI_BRANCH', "!['main', 'staging'].includes(ciBranch)", 'protected-branch cloud checks remain enforced']) {
+  if (!tinaBuildSafe.includes(marker)) fail(`Tina build safety wrapper is missing preview-schema marker ${marker}.`);
+}
 const startup = read('app.mjs');
 for (const name of ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET', 'CLOUDINARY_ROOT_FOLDER']) {
   if (!startup.includes(`'${name}'`) && !startup.includes(`"${name}"`)) fail(`app.mjs must fail closed when ${name} is missing.`);
 }
 if (!/missing required runtime variables/.test(startup) || !/throw new Error/.test(startup)) {
   fail('app.mjs must fail closed before server startup when required runtime variables are missing.');
+}
+
+const tinaConfig = read('tina/config.ts');
+if (!/media\s*:\s*\{[\s\S]*?loadCustomStore[\s\S]*?next-tinacms-cloudinary[\s\S]*?TinaCloudCloudinaryMediaStore/.test(tinaConfig)) {
+  fail('Self-hosted Tina must use the authenticated Cloudinary media store.');
+}
+const cloudinaryRoute = read('src/pages/api/cloudinary/media/[...media].ts');
+for (const marker of ['cloudflare:workers', 'requestedClientId !== configuredClientId', 'isAuthorized(reqForTina as any, configuredClientId)', 'CLOUDINARY_ROOT_FOLDER']) {
+  if (!cloudinaryRoute.includes(marker)) fail(`Cloudinary media route is missing authorization/isolation marker ${marker}.`);
 }
 
 for (const relative of ['tina/__generated__/client.ts', 'tina/__generated__/types.ts', 'tina/__generated__/types.js']) {

@@ -292,7 +292,7 @@ if (!/media\s*:\s*\{[\s\S]*?loadCustomStore[\s\S]*?next-tinacms-cloudinary[\s\S]
   fail('Self-hosted Tina must use the authenticated Cloudinary media store.');
 }
 const cloudinaryRoute = read('src/pages/api/cloudinary/media/[...media].ts');
-for (const marker of ['cloudflare:workers', 'requestedClientId !== configuredClientId', 'isAuthorized(reqForTina as any, configuredClientId)', 'return Boolean(user);', 'CLOUDINARY_ROOT_FOLDER']) {
+for (const marker of ['cloudflare:workers', 'requestedClientId !== configuredClientId', 'isAuthorized(reqForTina as any, configuredClientId)', 'MediaAuthorizationCheck', 'Authorization service unavailable', 'dgs_tina_media_session', 'HttpOnly; Secure; SameSite=Strict', 'CLOUDINARY_ROOT_FOLDER']) {
   if (!cloudinaryRoute.includes(marker)) fail(`Cloudinary media route is missing authorization/isolation marker ${marker}.`);
 }
 

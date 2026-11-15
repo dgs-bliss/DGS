@@ -14,8 +14,8 @@
     "site:provision": "node scripts/provision-site.mjs",
     "runtime:install": "node scripts/install-runtime-env.mjs",
     "runtime:test": "node scripts/test-runtime-env.mjs",
-    "validate:starter": "node scripts/validate-starter.mjs && pnpm runtime:test",
-    "validate:site": "node scripts/validate-starter.mjs --runtime",
+    "validate:starter": "node scripts/validate-starter.mjs && pnpm dgs:sitemap-lock && pnpm runtime:test",
+    "validate:site": "node scripts/validate-starter.mjs --runtime && pnpm dgs:sitemap-lock",
     "build:search": "tinacms search-index",
     "preview": "astro preview",
     "astro": "astro",
@@ -24,6 +24,7 @@
     "tina:fullcheck": "python3 scripts/tina-fullcheck.py",
     "astro:demo-lock": "pnpm dgs:homepage-lock",
     "dgs:homepage-lock": "node scripts/validate-dgs-homepage-lock.mjs",
+    "dgs:sitemap-lock": "node scripts/validate-dgs-sitemap.mjs",
     "test:apply-form": "node --experimental-strip-types --test tests/apply-form.test.ts"
   },
   "dependencies": {

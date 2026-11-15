@@ -3,15 +3,19 @@
   "items": [
     {
       "label": "Privacy",
-      "href": "/#top"
+      "href": "/privacy-policy/"
     },
     {
       "label": "Terms",
-      "href": "/#top"
+      "href": "/terms-of-use/"
     },
     {
       "label": "Cookies",
-      "href": "/#top"
+      "href": "/cookies-policy/"
+    },
+    {
+      "label": "Sitemap",
+      "href": "/sitemap/"
     }
   ]
 }

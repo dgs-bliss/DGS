@@ -5,9 +5,9 @@
     "title": "Digital Growth Society",
     "description": "A private mastermind of twelve agency owners who meet every Friday to test what is next in SEO and AI.",
     "siteOwner": "Digital Growth Society",
-    "logo": "https://res.cloudinary.com/ljjidst6/image/upload/v1794325968/digitalgrowthsociety/DGS-Logo-Retina.png",
-    "favicon": "https://res.cloudinary.com/ljjidst6/image/upload/v1794726904/digitalgrowthsociety/favicon.png",
-    "footerLogo": "https://res.cloudinary.com/ljjidst6/image/upload/v1794325968/digitalgrowthsociety/DGS-Logo-Retina.png",
+    "logo": "/brand-assets/dgs-homepage/dgs-logo-retina.png",
+    "favicon": "/brand-assets/dgs-homepage/favicon.png",
+    "footerLogo": "/brand-assets/dgs-homepage/dgs-logo-retina.png",
     "footerTagline": "Greater together · Since 2019",
     "footerCopyrightSuffix": "A nonprofit mastermind"
   },

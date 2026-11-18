@@ -1,24 +1,185 @@
 ---
-import { getBlogPermalink } from '../../lib/permalinks';
-import { labelFromReference, getPostCategories } from './DemoHelpers';
-const { posts = [], categories = [] } = Astro.props;
-const latest = posts.slice(0, 3);
-const sections = categories
-  .map((category: any) => ({
-    label: String(category?.title || category?._sys?.filename || '').trim(),
-    slug: String(category?._sys?.filename || '').trim(),
-  }))
-  .filter((category: { label: string; slug: string }) => category.label && category.slug);
-function postUrl(post: any) { const url = getBlogPermalink(post); return url.endsWith('/') ? url : url + '/'; }
-function sectionUrl(slug: string) { return '/' + slug.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '/'; }
 ---
 
-<main class="ffn-demo ffn-demo-404">
-  <section class="er"><div class="w"><div class="er-in"><span class="er-num">404</span><div class="er-b"><div class="er-k"><b>Page not found</b></div><h1>This page is not here.</h1><p>The link may be broken, or the story may have moved. Nothing was deleted quietly — if a piece was taken down or corrected, we say so on the page.</p><div class="er-cta"><a href="/" class="pri">Back to the homepage →</a></div></div></div></div></section>
-  <section class="sc"><div class="w"><div class="eye"><i></i><span>While you are here</span></div><div class="h2">Latest reporting</div><div class="mo-g">
-    {latest.map((post: any) => <a href={postUrl(post)} class="mi">{post.heroImage ? <img class="mi-img" src={post.heroImage} alt="" /> : <div class="mi-img demo-img"></div>}<div class="mi-c"><div class="mi-k">{labelFromReference(getPostCategories(post))}</div><div class="mi-h">{post.title}</div>{post.description && <p class="mi-x">{post.description}</p>}</div></a>)}
-  </div></div></section>
-  <section class="bd2"><div class="w"><div class="eye"><i></i><span>Or start from a section</span></div><div class="h2">Browse coverage</div><div class="bd2-g">
-    {sections.map((section: { label: string; slug: string }, index: number) => <a href={sectionUrl(section.slug)} class="bd2-i"><div class="bd2-n">{String(index + 1).padStart(2, '0')}</div><div class="bd2-t">{section.label}</div></a>)}
-  </div></div></section>
+<main id="main-content" class="ffn-demo ffn-demo-404">
+  <section class="er" aria-labelledby="error-title">
+    <div class="w">
+      <div class="er-card">
+        <div class="er-code" aria-hidden="true">
+          <span>404</span>
+          <small>Digital Growth Society</small>
+        </div>
+        <div class="er-b">
+          <div class="er-k"><b>Page not found</b></div>
+          <h1 id="error-title">This page has moved.</h1>
+          <p>We could not find the page you requested. It may have a new address, or the link may be out of date.</p>
+          <div class="er-cta">
+            <a href="/" class="pri">Return to the homepage <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
+
+<style>
+  .ffn-demo-404 {
+    background: var(--wash);
+  }
+
+  .ffn-demo-404 .er {
+    min-height: clamp(560px, 70vh, 760px);
+    display: flex;
+    align-items: center;
+    padding: 88px 0 104px;
+    background:
+      linear-gradient(135deg, transparent 0 72%, rgba(234, 88, 12, 0.08) 72% 100%),
+      var(--wash);
+    color: var(--blk);
+  }
+
+  .ffn-demo-404 .er::after {
+    display: none;
+  }
+
+  .ffn-demo-404 .er-card {
+    display: grid;
+    grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
+    border: 3px solid var(--blk);
+    background: #fff;
+    box-shadow: 16px 16px 0 var(--org);
+  }
+
+  .ffn-demo-404 .er-code {
+    min-height: 390px;
+    padding: 52px 46px 42px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: var(--blk);
+    border-bottom: 8px solid var(--org);
+  }
+
+  .ffn-demo-404 .er-code span {
+    display: block;
+    font-family: var(--dsp);
+    font-size: clamp(150px, 17vw, 240px);
+    font-weight: 900;
+    line-height: 0.78;
+    letter-spacing: -0.045em;
+    color: var(--org);
+  }
+
+  .ffn-demo-404 .er-code small {
+    font-family: var(--cnd);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .ffn-demo-404 .er-b {
+    padding: 58px 60px 60px;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .ffn-demo-404 .er-k {
+    margin-bottom: 24px;
+  }
+
+  .ffn-demo-404 .er-k b {
+    color: var(--blk);
+  }
+
+  .ffn-demo-404 .er-b h1 {
+    max-width: 9em;
+    margin: 0 0 20px;
+    color: var(--blk);
+    font-size: clamp(52px, 6vw, 78px);
+    line-height: 0.9;
+  }
+
+  .ffn-demo-404 .er-b p {
+    max-width: 37em;
+    margin: 0 0 32px;
+    color: var(--dim);
+    font-size: 18px;
+    line-height: 1.75;
+  }
+
+  .ffn-demo-404 .er-cta a.pri {
+    color: #fff;
+    background: var(--blk);
+    border-bottom: 5px solid var(--org);
+  }
+
+  .ffn-demo-404 .er-cta a.pri:hover,
+  .ffn-demo-404 .er-cta a.pri:focus-visible {
+    color: var(--blk);
+    background: var(--org);
+    outline: 3px solid var(--blk);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 860px) {
+    .ffn-demo-404 .er {
+      min-height: 0;
+      padding: 64px 0 78px;
+    }
+
+    .ffn-demo-404 .er-card {
+      grid-template-columns: 1fr;
+      box-shadow: 12px 12px 0 var(--org);
+    }
+
+    .ffn-demo-404 .er-code {
+      min-height: 0;
+      padding: 38px 34px 30px;
+      gap: 34px;
+    }
+
+    .ffn-demo-404 .er-code span {
+      font-size: clamp(116px, 29vw, 180px);
+    }
+
+    .ffn-demo-404 .er-b {
+      padding: 44px 36px 48px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .ffn-demo-404 .er {
+      padding: 42px 0 58px;
+    }
+
+    .ffn-demo-404 .er-card {
+      box-shadow: 8px 8px 0 var(--org);
+    }
+
+    .ffn-demo-404 .er-code {
+      padding: 32px 24px 24px;
+      gap: 24px;
+    }
+
+    .ffn-demo-404 .er-code small {
+      font-size: 13px;
+    }
+
+    .ffn-demo-404 .er-b {
+      padding: 36px 24px 40px;
+    }
+
+    .ffn-demo-404 .er-b h1 {
+      font-size: 44px;
+    }
+
+    .ffn-demo-404 .er-b p {
+      font-size: 16px;
+    }
+  }
+</style>

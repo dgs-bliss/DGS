@@ -1,21 +1,16 @@
 ---
 ---
 
-<main id="main-content" class="ffn-demo ffn-demo-404">
-  <section class="er" aria-labelledby="error-title">
-    <div class="w">
-      <div class="er-card">
-        <div class="er-code" aria-hidden="true">
-          <span>404</span>
-          <small>Digital Growth Society</small>
-        </div>
-        <div class="er-b">
-          <div class="er-k"><b>Page not found</b></div>
+<main id="main-content" class="dgs-404-page">
+  <section class="dgs-404-hero" aria-labelledby="error-title">
+    <div class="dgs-404-hero__inner">
+      <p class="dgs-404-eyebrow">Page not found</p>
+      <div class="dgs-404-grid">
+        <p class="dgs-404-code" aria-hidden="true">404</p>
+        <div class="dgs-404-copy">
           <h1 id="error-title">This page has moved.</h1>
           <p>We could not find the page you requested. It may have a new address, or the link may be out of date.</p>
-          <div class="er-cta">
-            <a href="/" class="pri">Return to the homepage <span aria-hidden="true">→</span></a>
-          </div>
+          <a class="dgs-404-link" href="/">Return to the homepage</a>
         </div>
       </div>
     </div>
@@ -23,163 +18,133 @@
 </main>
 
 <style>
-  .ffn-demo-404 {
-    background: var(--wash);
+  .dgs-404-page {
+    min-height: 68vh;
+    background: #f5f8fc;
+    color: #0a2240;
   }
 
-  .ffn-demo-404 .er {
-    min-height: clamp(560px, 70vh, 760px);
-    display: flex;
-    align-items: center;
-    padding: 88px 0 104px;
+  .dgs-404-hero {
+    padding: clamp(64px, 9vw, 112px) 24px clamp(72px, 10vw, 128px);
     background:
-      linear-gradient(135deg, transparent 0 72%, rgba(234, 88, 12, 0.08) 72% 100%),
-      var(--wash);
-    color: var(--blk);
+      radial-gradient(circle at 85% 5%, rgba(255, 255, 255, 0.13), transparent 34%),
+      #0a2240;
+    color: #ffffff;
   }
 
-  .ffn-demo-404 .er::after {
-    display: none;
+  .dgs-404-hero__inner {
+    width: min(100%, 1200px);
+    margin: 0 auto;
   }
 
-  .ffn-demo-404 .er-card {
+  .dgs-404-eyebrow {
+    margin: 0 0 28px;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #b9d3f2;
+  }
+
+  .dgs-404-grid {
     display: grid;
-    grid-template-columns: minmax(320px, 0.85fr) minmax(0, 1.15fr);
-    border: 3px solid var(--blk);
-    background: #fff;
-    box-shadow: 16px 16px 0 var(--org);
+    grid-template-columns: minmax(240px, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(44px, 8vw, 112px);
+    align-items: center;
   }
 
-  .ffn-demo-404 .er-code {
-    min-height: 390px;
-    padding: 52px 46px 42px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: var(--blk);
-    border-bottom: 8px solid var(--org);
+  .dgs-404-code {
+    margin: 0;
+    font-family: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+    font-size: clamp(128px, 19vw, 250px);
+    font-weight: 400;
+    line-height: 0.72;
+    letter-spacing: -0.065em;
+    color: #ffffff;
   }
 
-  .ffn-demo-404 .er-code span {
-    display: block;
-    font-family: var(--dsp);
-    font-size: clamp(150px, 17vw, 240px);
-    font-weight: 900;
-    line-height: 0.78;
+  .dgs-404-copy {
+    padding-left: clamp(28px, 4vw, 54px);
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .dgs-404-copy h1 {
+    max-width: 720px;
+    margin: 0;
+    font-family: 'Newsreader Variable', 'Newsreader', Georgia, serif;
+    font-size: clamp(48px, 7vw, 82px);
+    font-weight: 400;
+    line-height: 0.98;
     letter-spacing: -0.045em;
-    color: var(--org);
+    color: #ffffff;
   }
 
-  .ffn-demo-404 .er-code small {
-    font-family: var(--cnd);
+  .dgs-404-copy p {
+    max-width: 680px;
+    margin: 26px 0 0;
+    color: #d7e2ee;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.7;
+  }
+
+  .dgs-404-link {
+    margin-top: 34px;
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    border: 2px solid #ffffff;
+    background: #ffffff;
+    color: #0a2240;
+    font-family: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
     font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.18em;
-    line-height: 1.2;
+    letter-spacing: 0.06em;
+    text-decoration: none;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.72);
   }
 
-  .ffn-demo-404 .er-b {
-    padding: 58px 60px 60px;
-    border: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  .dgs-404-link:hover,
+  .dgs-404-link:focus-visible {
+    background: transparent;
+    color: #ffffff;
   }
 
-  .ffn-demo-404 .er-k {
-    margin-bottom: 24px;
+  .dgs-404-link:focus-visible {
+    outline: 3px solid #b9d3f2;
+    outline-offset: 4px;
   }
 
-  .ffn-demo-404 .er-k b {
-    color: var(--blk);
-  }
-
-  .ffn-demo-404 .er-b h1 {
-    max-width: 9em;
-    margin: 0 0 20px;
-    color: var(--blk);
-    font-size: clamp(52px, 6vw, 78px);
-    line-height: 0.9;
-  }
-
-  .ffn-demo-404 .er-b p {
-    max-width: 37em;
-    margin: 0 0 32px;
-    color: var(--dim);
-    font-size: 18px;
-    line-height: 1.75;
-  }
-
-  .ffn-demo-404 .er-cta a.pri {
-    color: #fff;
-    background: var(--blk);
-    border-bottom: 5px solid var(--org);
-  }
-
-  .ffn-demo-404 .er-cta a.pri:hover,
-  .ffn-demo-404 .er-cta a.pri:focus-visible {
-    color: var(--blk);
-    background: var(--org);
-    outline: 3px solid var(--blk);
-    outline-offset: 3px;
-  }
-
-  @media (max-width: 860px) {
-    .ffn-demo-404 .er {
-      min-height: 0;
-      padding: 64px 0 78px;
+  @media (max-width: 760px) {
+    .dgs-404-hero {
+      padding-inline: 18px;
     }
 
-    .ffn-demo-404 .er-card {
+    .dgs-404-grid {
       grid-template-columns: 1fr;
-      box-shadow: 12px 12px 0 var(--org);
+      gap: 42px;
     }
 
-    .ffn-demo-404 .er-code {
-      min-height: 0;
-      padding: 38px 34px 30px;
-      gap: 34px;
+    .dgs-404-code {
+      font-size: clamp(112px, 38vw, 180px);
     }
 
-    .ffn-demo-404 .er-code span {
-      font-size: clamp(116px, 29vw, 180px);
-    }
-
-    .ffn-demo-404 .er-b {
-      padding: 44px 36px 48px;
+    .dgs-404-copy {
+      padding: 34px 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.25);
+      border-left: 0;
     }
   }
 
-  @media (max-width: 600px) {
-    .ffn-demo-404 .er {
-      padding: 42px 0 58px;
-    }
-
-    .ffn-demo-404 .er-card {
-      box-shadow: 8px 8px 0 var(--org);
-    }
-
-    .ffn-demo-404 .er-code {
-      padding: 32px 24px 24px;
-      gap: 24px;
-    }
-
-    .ffn-demo-404 .er-code small {
-      font-size: 13px;
-    }
-
-    .ffn-demo-404 .er-b {
-      padding: 36px 24px 40px;
-    }
-
-    .ffn-demo-404 .er-b h1 {
-      font-size: 44px;
-    }
-
-    .ffn-demo-404 .er-b p {
-      font-size: 16px;
+  @media (max-width: 420px) {
+    .dgs-404-link {
+      box-sizing: border-box;
+      width: 100%;
+      padding-inline: 16px;
+      text-align: center;
     }
   }
 </style>

@@ -32,7 +32,7 @@ body{margin:0;background:#FFFFFF}
  .dgs-source-home .mbio{grid-column:1 / -1;margin-top:14px!important;font-size:16px!important}
  .dgs-source-home .mbadges{grid-column:1 / -1;margin-top:12px!important}
  .dgs-source-home .rimg{height:auto!important;aspect-ratio:4/3}
- .dgs-source-home .rimg.full{aspect-ratio:1020/590!important}
+ .dgs-source-home .rimg.full,.dgs-source-home .rimg.pair{aspect-ratio:1020/590!important}
  .dgs-source-home .stats{grid-template-columns:1fr 1fr!important;gap:24px 20px!important}
  .dgs-source-home .zoomshot{width:calc(100% + 32px)!important;max-width:none!important;margin:0 -16px;border-radius:0!important;border-left:0!important;border-right:0!important}
 }

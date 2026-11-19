@@ -63,10 +63,6 @@ function getSiteUrl() {
 
 // https://astro.build/config
 export default defineConfig({
-	// Tina Cloudinary media uploads are protected by Tina auth. Disable Astro's
-	// generic Origin check so multipart/form-data uploads return JSON instead
-	// of Astro's plain-text "Cross-site" rejection on cPanel/LiteSpeed.
-	security: { checkOrigin: false },
 	site: getSiteUrl(),
 	output: 'server',
 	adapter: await getAdapter(),
@@ -95,9 +91,11 @@ export default defineConfig({
 		// package's source `.astro` files on the first request.
 		ssr: {
 			noExternal: ['@tinacms/astro', '@tinacms/bridge', 'tinacms'],
+			external: ['cloudflare:workers', 'cloudflare:sockets'],
 		},
 		build: {
 			rollupOptions: {
+				external: ['cloudflare:workers', 'cloudflare:sockets'],
 				onwarn(warning, warn) {
 					if (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
 						warning.exporter === 'tinacms/dist/client') {

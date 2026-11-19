@@ -109,7 +109,8 @@ if (!existsSync(join(root, 'scripts/provision-site.mjs'))) fail('scripts/provisi
 if (!existsSync(join(root, 'scripts/install-runtime-env.mjs'))) fail('scripts/install-runtime-env.mjs is required for zero-omission runtime installation.');
 if (!existsSync(join(root, 'scripts/test-runtime-env.mjs'))) fail('scripts/test-runtime-env.mjs is required for runtime-install regression protection.');
 if (!existsSync(join(root, 'site.manifest.example.json'))) fail('site.manifest.example.json is required for repeatable site provisioning.');
-if (!existsSync(join(root, 'scripts/tina-build-safe.mjs'))) fail('scripts/tina-build-safe.mjs is required for direct Cloud schema checks and secret-safe generation.');
+if (!existsSync(join(root, 'scripts/tina-build-safe.mjs'))) fail('scripts/tina-build-safe.mjs is required for branch-correct production admin generation.');
+if (!existsSync(join(root, 'scripts/verify-repository-media-admin.mjs'))) fail('scripts/verify-repository-media-admin.mjs is required to reject local or obsolete media admin builds.');
 if (!existsSync(join(root, 'scripts/sanitize-generated-client.mjs'))) fail('scripts/sanitize-generated-client.mjs is required to keep generated credentials out of source control.');
 if (!existsSync(join(root, 'scripts/validate-dgs-homepage-lock.mjs'))) fail('scripts/validate-dgs-homepage-lock.mjs is required for fail-closed DGS homepage authority validation.');
 if (!existsSync(join(root, 'tests/fixtures/dgs-homepage-authority/authority-manifest.json'))) fail('DGS homepage authority manifest is required.');
@@ -142,9 +143,9 @@ else {
     ['Build and deploy one immutable release', 'atomic immutable deployment gate'],
     ['TINA-FULLCHECK', 'collection-complete fullcheck gate'],
     ['PUBLISHER-ADMIN-GATE', 'authenticated live-admin acceptance gate'],
-    ['CLOUDINARY_ROOT_FOLDER', 'complete Cloudinary runtime environment gate'],
+    ['brand-assets/dgs-homepage', 'repository-backed media root gate'],
     ['authenticated Media Manager', 'authenticated Media Manager list/UI acceptance gate'],
-    ['direct Cloudinary SDK', 'direct-SDK false-pass warning'],
+    ['versioned Git changes', 'versioned repository media acceptance gate'],
     ['fail closed', 'runtime startup fail-closed gate'],
     ['exact restoration', 'reversible cleanup gate'],
     ['FAILURE-DERIVED EXECUTION GATES', 'failure-derived executable prevention section'],
@@ -268,20 +269,45 @@ if (!/declaredIsLocal/.test(baseHead) || !/requestIsPublic/.test(baseHead)) {
 }
 if (packageJson.scripts?.['provision:clone']) fail('Legacy clone/search-replace provisioning command must not exist.');
 const runtimeInstaller = read('scripts/install-runtime-env.mjs');
-for (const marker of ['REQUIRED_RUNTIME_KEYS', 'CLOUDINARY_ROOT_FOLDER', 'renameSync', '0o600', 'SUPPLIED_CREDENTIAL_INSTALL_PASS']) {
+for (const marker of ['REQUIRED_RUNTIME_KEYS', 'TINA_TOKEN', 'renameSync', '0o600', 'SUPPLIED_CREDENTIAL_INSTALL_PASS']) {
   if (!runtimeInstaller.includes(marker)) fail(`Runtime installer is missing enforcement marker ${marker}.`);
 }
 const runtimeRegression = read('scripts/test-runtime-env.mjs');
 for (const marker of ['INCOMPLETE_SOURCE_NO_TARGET_MODIFICATION_PASS', 'INCOMPLETE_RUNTIME_STARTUP_BLOCK_PASS', 'SECRET_SAFE_CLI_EVIDENCE_PASS']) {
   if (!runtimeRegression.includes(marker)) fail(`Runtime regression suite is missing ${marker}.`);
 }
-const startup = read('app.mjs');
-for (const name of ['CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY', 'CLOUDINARY_API_SECRET', 'CLOUDINARY_ROOT_FOLDER']) {
-  if (!startup.includes(`'${name}'`) && !startup.includes(`"${name}"`)) fail(`app.mjs must fail closed when ${name} is missing.`);
+const tinaBuildSafe = read('scripts/tina-build-safe.mjs');
+for (const marker of ['WORKERS_CI_BRANCH', "!['main', 'staging'].includes(ciBranch)", 'staging.digitalgrowthsociety.org', 'Building Tina production client', 'verify-repository-media-admin.mjs']) {
+  if (!tinaBuildSafe.includes(marker)) fail(`Tina build safety wrapper is missing preview-schema marker ${marker}.`);
 }
+const repositoryAdminVerifier = read('scripts/verify-repository-media-admin.mjs');
+for (const marker of ['brand-assets/dgs-homepage', 'NEXT_PUBLIC_TINA_BRANCH', '/api/cloudinary/media', 'REPOSITORY_MEDIA_ADMIN_BUILD_PASS']) {
+  if (!repositoryAdminVerifier.includes(marker)) fail(`Repository media admin verifier is missing ${marker}.`);
+}
+const startup = read('app.mjs');
 if (!/missing required runtime variables/.test(startup) || !/throw new Error/.test(startup)) {
   fail('app.mjs must fail closed before server startup when required runtime variables are missing.');
 }
+
+const tinaConfig = read('tina/config.ts');
+if (!/media\s*:\s*\{[\s\S]*?tina\s*:\s*\{[\s\S]*?publicFolder\s*:\s*["']public["'][\s\S]*?mediaRoot\s*:\s*["']brand-assets\/dgs-homepage["'][\s\S]*?static\s*:\s*true/.test(tinaConfig)) {
+  fail('Self-hosted Tina must use static repository media at public/brand-assets/dgs-homepage.');
+}
+if (/loadCustomStore|next-tinacms-cloudinary|TinaCloudCloudinaryMediaStore/i.test(tinaConfig)) {
+  fail('External media stores are forbidden; DGS media must remain repository-backed.');
+}
+if (existsSync(join(root, 'src/pages/api/cloudinary/media/[...media].ts'))) fail('The obsolete Cloudinary media API route must not exist.');
+for (const packageName of ['cloudinary', 'next-tinacms-cloudinary']) {
+  if (packageJson.dependencies?.[packageName] || packageJson.devDependencies?.[packageName]) fail(`${packageName} must not be installed.`);
+}
+const headers = read('public/_headers');
+for (const marker of ['/brand-assets/dgs-homepage/*', 'X-Content-Type-Options: nosniff', "Content-Security-Policy: default-src 'none'"]) {
+  if (!headers.includes(marker)) fail(`Repository media response headers are missing ${marker}.`);
+}
+const mediaRoot = join(root, 'public/brand-assets/dgs-homepage');
+if (!existsSync(mediaRoot) || walk(mediaRoot, []).length < 53) fail('Repository media root must preserve the 53 existing DGS assets.');
+const cloudinarySourceMatches = walk(root, []).filter((path) => !['scripts/validate-starter.mjs', 'scripts/verify-repository-media-admin.mjs'].includes(relative(root, path)) && /\.(?:js|mjs|ts|tsx|json|jsonc)$/.test(path) && /CLOUDINARY_|next-tinacms-cloudinary|TinaCloudCloudinaryMediaStore/.test(readFileSync(path, 'utf8')));
+if (cloudinarySourceMatches.length) fail(`Cloudinary implementation/configuration remains in: ${cloudinarySourceMatches.map((path) => relative(root, path)).join(', ')}.`);
 
 for (const relative of ['tina/__generated__/client.ts', 'tina/__generated__/types.ts', 'tina/__generated__/types.js']) {
   const generatedPath = join(root, relative);
@@ -301,8 +327,7 @@ if (strictRuntime) {
   loadDotEnv();
   const required = [
     'SITE_PROVISION_MODE', 'SITE_URL', 'NEXT_PUBLIC_TINA_CLIENT_ID', 'TINA_TOKEN', 'NEXT_PUBLIC_TINA_BRANCH',
-    'GITHUB_CONTENT_REPO', 'CLOUDINARY_CLOUD_NAME', 'CLOUDINARY_API_KEY',
-    'CLOUDINARY_API_SECRET', 'CLOUDINARY_ROOT_FOLDER', 'NEXT_PUBLIC_TINA_CONTENT_API_URL',
+    'GITHUB_CONTENT_REPO', 'NEXT_PUBLIC_TINA_CONTENT_API_URL',
   ];
   for (const name of required) if (!String(process.env[name] || '').trim()) fail(`Missing runtime variable ${name}.`);
   for (const name of required) {
@@ -324,8 +349,6 @@ if (strictRuntime) {
   }
   const repo = String(process.env.GITHUB_CONTENT_REPO || '');
   if (repo && !/^[^/\s]+\/[^/\s]+$/.test(repo)) fail('GITHUB_CONTENT_REPO must use owner/repository format.');
-  const folder = String(process.env.CLOUDINARY_ROOT_FOLDER || '').toLowerCase();
-  if (provisionMode === 'independent' && ['boilerplate', 'starter', 'default'].includes(folder)) fail('CLOUDINARY_ROOT_FOLDER must be unique to the independent site.');
   const apiUrl = String(process.env.NEXT_PUBLIC_TINA_CONTENT_API_URL || '');
   if (siteUrl && apiUrl !== `${siteUrl}/tina-content-proxy`) fail('NEXT_PUBLIC_TINA_CONTENT_API_URL must use this site origin.');
 }

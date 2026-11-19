@@ -9,10 +9,6 @@
   "tinaToken": "replace-with-new-tina-read-token",
   "tinaBranch": "main",
   "githubContentRepo": "owner/new-repository",
-  "cloudinaryCloudName": "replace-with-cloud-name",
-  "cloudinaryApiKey": "replace-with-api-key",
-  "cloudinaryApiSecret": "replace-with-api-secret",
-  "cloudinaryRootFolder": "unique-site-slug",
   "tinaContentApiUrl": "https://www.example.com/tina-content-proxy",
   "formspreeEndpoint": ""
 }

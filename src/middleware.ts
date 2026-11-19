@@ -54,6 +54,18 @@ function buildDestination(destination: string, request: Request, requestUrl: URL
   return url;
 }
 
+function isStagingHost(url: URL) {
+  const hostname = url.hostname.toLowerCase();
+  return hostname === 'staging.digitalgrowthsociety.org' || hostname.endsWith('.workers.dev');
+}
+
+function applyDeploymentHeaders(response: Response, url: URL) {
+  if (isStagingHost(url)) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  }
+  return response;
+}
+
 export const onRequest = defineMiddleware(async (context, next) => {
   const { request, url } = context;
   const method = request.method.toUpperCase();
@@ -70,7 +82,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
     url.pathname === '/sitemap-index.xml' ||
     url.pathname === '/rss.xml'
   ) {
-    return next();
+    return applyDeploymentHeaders(await next(), url);
   }
 
   const redirects = readRedirects();
@@ -82,7 +94,10 @@ export const onRequest = defineMiddleware(async (context, next) => {
     const destination = buildDestination(redirect.destination, request, url);
     if (destination.pathname === url.pathname && destination.origin === url.origin) continue;
 
-    return Response.redirect(destination, redirect.permanent === false ? 302 : 301);
+    return applyDeploymentHeaders(
+      Response.redirect(destination, redirect.permanent === false ? 302 : 301),
+      url,
+    );
   }
 
   const response = await next();
@@ -94,5 +109,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
     response.headers.set('Pragma', 'no-cache');
     response.headers.set('Expires', '0');
   }
-  return response;
+  return applyDeploymentHeaders(response, url);
 });

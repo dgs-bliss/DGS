@@ -21,10 +21,6 @@ const completeEntries = {
   NEXT_PUBLIC_TINA_BRANCH: 'main',
   NEXT_PUBLIC_TINA_CONTENT_API_URL: 'https://runtime-regression.invalid/tina-content-proxy',
   GITHUB_CONTENT_REPO: 'destination-owner/destination-repository',
-  CLOUDINARY_CLOUD_NAME: 'destination-cloud',
-  CLOUDINARY_API_KEY: '123456789012345',
-  CLOUDINARY_API_SECRET: secretMarker,
-  CLOUDINARY_ROOT_FOLDER: 'destination-site-92a1',
   OPTIONAL_SUPPLIED_SERVICE_SETTING: 'must-also-be-preserved',
 };
 
@@ -50,26 +46,16 @@ console.log('COMPLETE_ACTIVE_ROLLBACK_INSTALL_PASS');
 
 const beforeActive = readFileSync(active, 'utf8');
 const beforeRollback = readFileSync(rollback, 'utf8');
-const incomplete = join(workspace, 'missing-root.env');
-const { CLOUDINARY_ROOT_FOLDER: _omitted, ...withoutRoot } = completeEntries;
-writeFileSync(incomplete, envText(withoutRoot), { mode: 0o600 });
+const incomplete = join(workspace, 'missing-tina-token.env');
+const { TINA_TOKEN: _omitted, ...withoutTinaToken } = completeEntries;
+writeFileSync(incomplete, envText(withoutTinaToken), { mode: 0o600 });
 assert.throws(
   () => installRuntimeEnv({ source: incomplete, targets: [active, rollback] }),
-  /CLOUDINARY_ROOT_FOLDER/,
+  /TINA_TOKEN/,
 );
 assert.equal(readFileSync(active, 'utf8'), beforeActive);
 assert.equal(readFileSync(rollback, 'utf8'), beforeRollback);
 console.log('INCOMPLETE_SOURCE_NO_TARGET_MODIFICATION_PASS');
-
-const genericFolder = join(workspace, 'generic-folder.env');
-writeFileSync(genericFolder, envText({ ...completeEntries, CLOUDINARY_ROOT_FOLDER: 'media' }), { mode: 0o600 });
-assert.throws(
-  () => installRuntimeEnv({ source: genericFolder, targets: [active, rollback] }),
-  /unique to the destination site/,
-);
-assert.equal(readFileSync(active, 'utf8'), beforeActive);
-assert.equal(readFileSync(rollback, 'utf8'), beforeRollback);
-console.log('GENERIC_FOLDER_NO_TARGET_MODIFICATION_PASS');
 
 const appResult = spawnSync(process.execPath, [resolve('app.mjs')], {
   cwd: workspace,
@@ -78,7 +64,7 @@ const appResult = spawnSync(process.execPath, [resolve('app.mjs')], {
 });
 const appOutput = `${appResult.stdout || ''}${appResult.stderr || ''}`;
 assert.notEqual(appResult.status, 0);
-assert.match(appOutput, /CLOUDINARY_ROOT_FOLDER/);
+assert.match(appOutput, /TINA_TOKEN/);
 assert.ok(!appOutput.includes(secretMarker), 'Startup failure must never print supplied secret values.');
 console.log('INCOMPLETE_RUNTIME_STARTUP_BLOCK_PASS');
 

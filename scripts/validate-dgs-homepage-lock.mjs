@@ -34,7 +34,15 @@ for (const key of ['sections', 'articles', 'details', 'forms']) {
   if (currentCounts[key] !== authorityCounts[key]) fail(`current ${key} count ${currentCounts[key]} != authority ${authorityCounts[key]}`);
 }
 if (/<header\b|<footer\b/.test(front)) fail('global header/footer leaked into FrontPage.astro');
-if (!front.includes('config?.contactForm?.formspreeEndpoint')) fail('homepage form is not connected to global Formspree configuration');
+if (!front.includes("const formAction = '/api/apply'")) fail('homepage form is not connected to the first-party application endpoint');
+if (!front.includes("window.location.assign('/thank-you/')")) fail('homepage form does not redirect to the thank-you page after success');
+if (/formspree/i.test(front)) fail('homepage form still contains a Formspree dependency');
+const thankYouPath = join(root, 'src/pages/thank-you.astro');
+if (!existsSync(thankYouPath)) fail('thank-you page is missing');
+const thankYou = readFileSync(thankYouPath, 'utf8');
+if (!thankYou.includes('Thank you for getting in touch!')) fail('thank-you heading changed');
+if (!thankYou.includes('We have received your inquiry and will respond to you within 24 hours. For urgent inquiries please call us on one of the telephone numbers below.')) fail('thank-you copy changed');
+if (!thankYou.includes('noindex={true}')) fail('thank-you page must remain noindex');
 
 const homePath = join(root, 'src/content/page/home.mdx');
 const home = matter(readFileSync(homePath, 'utf8')).data;

@@ -4,13 +4,13 @@ import '@fontsource-variable/public-sans';
 import '@fontsource-variable/sora';
 import '../styles/dgs-homepage-source.css';
 
-const { data, config = null } = Astro.props;
+const { data } = Astro.props;
 const blocks = Array.isArray(data?.blocks) ? data.blocks : [];
 const isHomepageTemplate = (block: any) => block?._template === 'homepageTemplate' || block?.__typename === 'PageBlocksHomepageTemplate';
 const homepage = blocks.find(isHomepageTemplate) ?? {};
 const sourceContent = homepage?.sourceContent ?? {};
-const formAction = String(config?.contactForm?.formspreeEndpoint || '').trim();
-const formConfigured = /^https:\/\/formspree\.io\/f\/[A-Za-z0-9_-]+$/.test(formAction);
+const formAction = '/api/apply';
+const turnstileSiteKey = String(import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || process.env.PUBLIC_TURNSTILE_SITE_KEY || '').trim();
 
 function group(section: string): any {
   return sourceContent?.[section] ?? {};
@@ -780,11 +780,11 @@ function link(section: string, key: string, fallback: string): string {
 <p style="margin: 0; font-size: 20px; line-height: 1.65; color: #4E5761">{text("retreat","text-for-four-to-five-days-the-dozen-gets-off-zoom-an","For four to five days, the Dozen gets off Zoom and into one house. We teach each other, work through each other's businesses, and build the trust that makes Friday honest. Iron sharpens iron.")}</p>
 </div>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 16px">
-<img class="rimg" src={asset("retreat","image-dgs-members-fly-fishing-at-a-mountain-lake-durin","/brand-assets/dgs-homepage/photos/hero-fishing.jpg")} width="1600" height="1347" loading="lazy" decoding="async" alt={assetAlt("retreat","image-dgs-members-fly-fishing-at-a-mountain-lake-durin","DGS members fly fishing at a mountain lake during the retreat")} style="grid-column: 1 / -1; display: block; width: 100%; height: 520px; object-fit: cover; object-position: center 62%; border-radius: 2px">
+<img class="rimg" src={asset("retreat","image-dgs-members-fly-fishing-at-a-mountain-lake-durin","/brand-assets/dgs-homepage/photos/hero-fishing.jpg")} width="1600" height="1347" loading="lazy" decoding="async" alt={assetAlt("retreat","image-dgs-members-fly-fishing-at-a-mountain-lake-durin","DGS members fly fishing at a mountain lake during the retreat")} style="grid-column: 1 / -1; display: block; width: 100%; height: 340px; object-fit: cover; object-position: center 62%; border-radius: 2px">
 <img class="rimg" src={asset("retreat","image-a-member-presenting-to-the-group-on-the-big-scre","/brand-assets/dgs-homepage/photos/retreat-presenting.jpg")} width="1600" height="900" loading="lazy" decoding="async" alt={assetAlt("retreat","image-a-member-presenting-to-the-group-on-the-big-scre","A member presenting to the group on the big screen")} style="display: block; width: 100%; height: 340px; object-fit: cover; object-position: 30% center; border-radius: 2px">
 <img class="rimg" src={asset("retreat","image-a-member-teaching-a-session-to-the-group","/brand-assets/dgs-homepage/photos/retreat-teaching.jpg")} width="1600" height="1200" loading="lazy" decoding="async" alt={assetAlt("retreat","image-a-member-teaching-a-session-to-the-group","A member teaching a session to the group")} style="display: block; width: 100%; height: 340px; object-fit: cover; border-radius: 2px">
-<img class="rimg" src={asset("retreat","image-group-dinner-overlooking-a-lake-at-sunset","/brand-assets/dgs-homepage/photos/retreat-dinner.jpg")} width="1600" height="1200" loading="lazy" decoding="async" alt={assetAlt("retreat","image-group-dinner-overlooking-a-lake-at-sunset","Group dinner overlooking a lake at sunset")} style="display: block; width: 100%; height: 100%; min-height: 0; object-fit: cover; border-radius: 2px">
-<img class="rimg full" src={asset("retreat","image-the-group-at-the-retreat-cabin","/brand-assets/dgs-homepage/photos/retreat-cabin.jpg")} width="1020" height="590" loading="lazy" decoding="async" alt={assetAlt("retreat","image-the-group-at-the-retreat-cabin","The group at the retreat cabin")} style="display: block; width: 100%; height: auto; aspect-ratio: 1020 / 590; object-fit: cover; object-position: center; border-radius: 2px">
+<img class="rimg pair" src={asset("retreat","image-group-dinner-overlooking-a-lake-at-sunset","/brand-assets/dgs-homepage/photos/retreat-dinner.jpg")} width="1600" height="1200" loading="lazy" decoding="async" alt={assetAlt("retreat","image-group-dinner-overlooking-a-lake-at-sunset","Group dinner overlooking a lake at sunset")} style="display: block; width: 100%; height: 340px; object-fit: cover; border-radius: 2px">
+<img class="rimg full" src={asset("retreat","image-the-group-at-the-retreat-cabin","/brand-assets/dgs-homepage/photos/retreat-cabin.jpg")} width="1020" height="590" loading="lazy" decoding="async" alt={assetAlt("retreat","image-the-group-at-the-retreat-cabin","The group at the retreat cabin")} style="display: block; width: 100%; height: 340px; object-fit: cover; object-position: center; border-radius: 2px">
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 10px">
 
@@ -819,24 +819,99 @@ function link(section: string, key: string, fallback: string): string {
 <!-- APPLY -->
 <section id="apply" style="padding: 104px 0">
 <div style="max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; flex-wrap: wrap; gap: 48px">
-<form class="applyform" action={formConfigured ? formAction : undefined} method="post" style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #DADFE3; border-radius: 2px; padding: 36px; display: flex; flex-direction: column; gap: 18px">
-<input type="hidden" name="_subject" value="Digital Growth Society speaker application" />
+<form class="applyform" action={formAction} method="post" data-apply-form style="flex: 3 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #DADFE3; border-radius: 2px; padding: 36px; display: flex; flex-direction: column; gap: 18px">
+<input type="hidden" name="form_started_at" value="" />
 <h2 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-optical-sizing: auto; font-weight: 400; font-size: 34px; letter-spacing: -0.015em">{text("apply","text-have-something-worth-sharing","Have something worth sharing?")}</h2>
 <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #4E5761">{text("apply","text-apply-to-present-to-the-dozen-it-takes-about-two","Apply to present to the Dozen. It takes about two minutes, and every member started as a guest.")}</p>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px">
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-your-name","Your name")}<input type="text" name="name" required="" autocomplete="name" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-email","Email")}<input type="email" name="email" required="" autocomplete="email" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-linkedin-or-website","LinkedIn or website")}<input type="url" name="link" required="" inputmode="url" placeholder={text("apply","text-placeholder","https://")} style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-your-name","Your name")}<input type="text" name="name" required="" maxlength="100" autocomplete="name" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-email","Email")}<input type="email" name="email" required="" maxlength="254" autocomplete="email" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-linkedin-or-website","LinkedIn or website")}<input type="url" name="link" required="" maxlength="2000" inputmode="url" placeholder={text("apply","text-placeholder","https://")} style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64);"></label>
 <label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-who-in-the-group-knows-you","Who in the group knows you?")}<select name="referrer" required="" style="font: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid #C3CAD1; background: #F5F8FC; color: #0A2240; appearance: none; -webkit-appearance: none; padding-right: 40px; background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%231F4E8C' stroke-width='1.8'/%3E%3C/svg%3E&quot;); background-repeat: no-repeat; background-position: right 14px center; cursor: pointer"><option value="" selected="" disabled="">{text("apply","text-choose-one","Choose one")}</option><option>{text("apply","text-richard-fong","Richard Fong")}</option><option>{text("apply","text-chris-koszo","Chris Koszo")}</option><option>{text("apply","text-andrew-ansley","Andrew Ansley")}</option><option>{text("apply","text-brian-winum","Brian Winum")}</option><option>{text("apply","text-chris-castillo","Chris Castillo")}</option><option>{text("apply","text-chas-henry","Chas Henry")}</option><option>{text("apply","text-chris-labbate","Chris Labbate")}</option><option>{text("apply","text-cory-hubbell","Cory Hubbell")}</option><option>{text("apply","text-mike-merlino","Mike Merlino")}</option><option>{text("apply","text-brian-kato","Brian Kato")}</option><option>{text("apply","text-brian-hong","Brian Hong")}</option><option>{text("apply","text-simon-cornelius","Simon Cornelius")}</option><option>{text("apply","text-a-past-guest-or-advisor","A past guest or advisor")}</option><option>{text("apply","text-we-met-at-an-event","We met at an event")}</option><option>{text("apply","text-no-one-yet","No one yet")}</option></select></label>
 </div>
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-what-would-you-present","What would you present?")}<textarea name="topic" rows="3" required="" placeholder={text("apply","text-placeholder-a-test-a-tool-or-a-workflow-that-s-w","A test, a tool or a workflow that’s working right now. A few sentences is plenty.")} style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64); resize: vertical;"></textarea></label>
-<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761"><span>{text("apply","text-a-problem-you-d-want-the-room-s-help-with","A problem you’d want the room’s help with ")}<span style="font-weight: 400; color: #5A6474">{text("apply","text-optional","(optional)")}</span></span><span style="font-size: 14.5px; color: #5A6474; line-height: 1.45">{text("apply","text-this-becomes-your-hot-seat-twelve-operators-one-","This becomes your hot seat. Twelve operators, one problem of yours.")}</span><textarea name="hotseat" rows="2" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64); resize: vertical;"></textarea></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761">{text("apply","text-what-would-you-present","What would you present?")}<textarea name="topic" rows="3" required="" minlength="10" maxlength="2000" placeholder={text("apply","text-placeholder-a-test-a-tool-or-a-workflow-that-s-w","A test, a tool or a workflow that’s working right now. A few sentences is plenty.")} style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64); resize: vertical;"></textarea></label>
+<label style="display: flex; flex-direction: column; gap: 8px; font-size: 16px; color: #4E5761"><span>{text("apply","text-a-problem-you-d-want-the-room-s-help-with","A problem you’d want the room’s help with ")}<span style="font-weight: 400; color: #5A6474">{text("apply","text-optional","(optional)")}</span></span><span style="font-size: 14.5px; color: #5A6474; line-height: 1.45">{text("apply","text-this-becomes-your-hot-seat-twelve-operators-one-","This becomes your hot seat. Twelve operators, one problem of yours.")}</span><textarea name="hotseat" rows="2" maxlength="2000" style="font-style: inherit; font-variant: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; font-family: inherit; font-optical-sizing: inherit; font-size-adjust: inherit; font-kerning: inherit; font-feature-settings: inherit; font-variation-settings: inherit; font-size: 18px; padding: 13px 14px; border-radius: 2px; border: 1px solid rgb(195, 202, 209); background: rgb(245, 248, 252); color: rgb(10, 34, 64); resize: vertical;"></textarea></label>
 <div aria-hidden="true" style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden"><label>{text("apply","text-leave-this-empty","Leave this empty")}<input type="text" name="company_website" tabindex="-1" autocomplete="off" style=""></label></div>
+<div data-turnstile-field>
+  {turnstileSiteKey ? <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="light"></div> : <p role="alert" style="margin:0;color:#9B1C1C">Applications are temporarily unavailable.</p>}
+</div>
+<noscript><p role="alert" style="color:#9B1C1C">JavaScript is required to submit this application securely.</p></noscript>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; margin-top: 4px">
-<button type="submit" style="text-transform: uppercase; letter-spacing: 0.08em; font: inherit; font-weight: 600; font-size: 16px; background: #0A2240; color: #FFFFFF; border: 0; border-radius: 2px; padding: 16px 26px; cursor: pointer">{text("apply","text-send-my-application","Send my application")}</button>
+<button type="submit" data-apply-submit disabled={!turnstileSiteKey} style="text-transform: uppercase; letter-spacing: 0.08em; font: inherit; font-weight: 600; font-size: 16px; background: #0A2240; color: #FFFFFF; border: 0; border-radius: 2px; padding: 16px 26px; cursor: pointer">{text("apply","text-send-my-application","Send my application")}</button>
 <span style="font-size: 15px; line-height: 1.5; color: #5A6474; flex: 1 1 240px">{text("apply","text-a-member-reads-every-application-you-ll-hear-bac","A member reads every application. You’ll hear back within a few days.")}</span>
 </div>
+<div data-apply-status role="status" aria-live="polite" tabindex="-1" style="min-height:1.5em;font-size:16px;line-height:1.5"></div>
 </form>
+{turnstileSiteKey && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+<script is:inline>
+  (() => {
+    const form = document.querySelector('[data-apply-form]');
+    if (!(form instanceof HTMLFormElement)) return;
+    const status = form.querySelector('[data-apply-status]');
+    const submit = form.querySelector('[data-apply-submit]');
+    const startedAt = form.elements.namedItem('form_started_at');
+    if (startedAt instanceof HTMLInputElement) startedAt.value = String(Date.now());
+
+    const clearErrors = () => {
+      form.querySelectorAll('[data-field-error]').forEach((element) => element.remove());
+      form.querySelectorAll('[aria-invalid="true"]').forEach((element) => {
+        element.removeAttribute('aria-invalid');
+        element.removeAttribute('aria-describedby');
+      });
+    };
+    const showFieldError = (name, message) => {
+      const field = name === 'turnstile'
+        ? form.querySelector('[data-turnstile-field]')
+        : form.elements.namedItem(name);
+      if (!(field instanceof HTMLElement)) return;
+      const id = `apply-error-${name}`;
+      const error = document.createElement('span');
+      error.id = id;
+      error.dataset.fieldError = '';
+      error.textContent = String(message);
+      error.style.cssText = 'display:block;margin-top:6px;color:#9B1C1C;font-size:14px;line-height:1.4';
+      field.setAttribute('aria-invalid', 'true');
+      field.setAttribute('aria-describedby', id);
+      (field.closest('label') || field).insertAdjacentElement('afterend', error);
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearErrors();
+      if (!form.reportValidity()) return;
+      if (!(submit instanceof HTMLButtonElement) || !(status instanceof HTMLElement)) return;
+      const originalLabel = submit.textContent;
+      submit.disabled = true;
+      submit.textContent = 'Sending…';
+      status.textContent = '';
+      status.style.color = '#4E5761';
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const result = await response.json().catch(() => ({ ok: false, message: 'Unexpected server response.' }));
+        if (!response.ok || !result.ok) {
+          for (const [name, message] of Object.entries(result.fields || {})) showFieldError(name, message);
+          throw new Error(result.message || 'We could not send your application. Please try again.');
+        }
+        window.location.assign('/thank-you/');
+      } catch (error) {
+        status.textContent = error instanceof Error ? error.message : 'We could not send your application. Please try again.';
+        status.style.color = '#9B1C1C';
+        status.focus();
+        window.turnstile?.reset?.();
+      } finally {
+        if (submit.isConnected) {
+          submit.disabled = false;
+          submit.textContent = originalLabel;
+        }
+      }
+    });
+  })();
+</script>
 <div style="flex: 2 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
 <p style="margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #1F4E8C">{text("apply","text-what-you-walk-away-with","What you walk away with")}</p>
 

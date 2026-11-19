@@ -23,7 +23,19 @@ const seo = config?.seo ?? null;
 const siteTitle = seo?.title || 'Digital Growth Society';
 const footerTagline = seo?.footerTagline || 'Greater together · Since 2019';
 const footerCopyrightSuffix = seo?.footerCopyrightSuffix || 'A nonprofit mastermind';
-const footerMenuItems = ((navigation?.items ?? []) as NavItem[]).filter((item) => item && item.label && item.href);
+const requiredPolicyLinks: NavItem[] = [
+  { label: 'Privacy', href: '/privacy-policy/' },
+  { label: 'Terms', href: '/terms-of-use/' },
+  { label: 'Cookies', href: '/cookies-policy/' },
+  { label: 'Sitemap', href: '/sitemap/' },
+];
+const requiredLabels = new Set(requiredPolicyLinks.map((item) => item.label?.toLowerCase()));
+const cmsFooterItems = ((navigation?.items ?? []) as NavItem[]).filter(
+  (item) => item && item.label && item.href && !requiredLabels.has(item.label.toLowerCase()),
+);
+// Legal/utility routes must never fall back to stale Tina placeholder links.
+// Other CMS-managed footer items remain editable and render before these links.
+const footerMenuItems = [...cmsFooterItems, ...requiredPolicyLinks];
 ---
 
 <footer class="dgs-site-footer" data-brand-footer>

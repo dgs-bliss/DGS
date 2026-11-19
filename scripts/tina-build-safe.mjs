@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, rmSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { sanitizeGeneratedClient } from './sanitize-generated-client.mjs';
 
 const local = process.argv.includes('--local');
+const ciBranch = String(process.env.WORKERS_CI_BRANCH || process.env.CF_PAGES_BRANCH || '').trim();
+const previewBuild = process.env.WORKERS_CI === '1'
+  && ciBranch
+  && !['main', 'staging'].includes(ciBranch);
 
 const parseEnvFile = (path) => {
   if (!existsSync(path)) return {};
@@ -33,6 +37,18 @@ if (!trustedWorkersBuildEnv) {
     if (/^(TINA_|NEXT_PUBLIC_TINA_|PUBLIC_TINA_)/.test(key)) delete siteEnv[key];
   }
   Object.assign(siteEnv, fileEnv);
+}
+if (process.env.WORKERS_CI === '1' && ciBranch) {
+  siteEnv.NEXT_PUBLIC_TINA_BRANCH = ciBranch;
+}
+if (previewBuild) {
+  const previewOrigin = 'https://preview.digitalgrowthsociety.org';
+  siteEnv.NEXT_PUBLIC_TINA_CONTENT_API_URL = `${previewOrigin}/tina-content-proxy`;
+  siteEnv.SITE_URL = previewOrigin;
+} else if (process.env.WORKERS_CI === '1' && ciBranch === 'staging') {
+  const stagingOrigin = 'https://staging.digitalgrowthsociety.org';
+  siteEnv.NEXT_PUBLIC_TINA_CONTENT_API_URL = `${stagingOrigin}/tina-content-proxy`;
+  siteEnv.SITE_URL = stagingOrigin;
 }
 
 const protectedEntries = Object.entries(siteEnv).filter(([key, value]) =>
@@ -90,20 +106,36 @@ let status = 1;
 try {
   if (local) {
     status = run(['tinacms', 'build', '--local', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
+  } else if (previewBuild) {
+    // Tina indexes Git branches asynchronously. A schema-changing feature branch
+    // can otherwise deadlock its own preview before the remote schema catches up.
+    process.stdout.write(`Building Tina preview for ${ciBranch}.\n`);
+    status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
   } else {
-    const cloudEnv = { ...siteEnv, TINA_DIRECT_CLOUD_CHECK: '1' };
-    status = run(['tinacms', 'build', '--noTelemetry', '-c', 'node --version'], cloudEnv);
+    // A merged branch can be available to Cloudflare before Tina's asynchronous
+    // schema index catches up. Build the same production Tina client used by the
+    // proven preview; --local is intentionally forbidden here.
+    process.stdout.write(`Building Tina production client for ${ciBranch || siteEnv.NEXT_PUBLIC_TINA_BRANCH}.\n`);
+    status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version']);
   }
   if (status === 0) {
     sanitizeGeneratedClient();
     const tokenFreeEnv = withoutTinaTokens(siteEnv);
     if (!local) status = run(['tinacms', 'build', '--skip-cloud-checks', '--noTelemetry', '-c', 'node --version'], tokenFreeEnv);
+    if (status === 0 && !local) status = run(['node', 'scripts/verify-repository-media-admin.mjs'], tokenFreeEnv);
     if (status === 0) {
       sanitizeGeneratedClient();
       status = run(['astro', 'build'], tokenFreeEnv);
     }
   }
   if (status === 0) {
+    // The Cloudflare adapter mirrors local build secrets into a development-only
+    // file. Remote bindings supply these at runtime, so never retain or deploy it.
+    const generatedDevVars = resolve('dist/server/.dev.vars');
+    if (existsSync(generatedDevVars)) {
+      rmSync(generatedDevVars, { force: true });
+      process.stdout.write('Removed generated dist/server/.dev.vars before artifact scan.\n');
+    }
     const findings = scanDirectory(resolve('dist'));
     if (findings.length) {
       for (const finding of findings) process.stderr.write(`Secret scan failed: ${finding.key} found in ${finding.file}\n`);

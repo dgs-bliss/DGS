@@ -37,6 +37,7 @@ function link(section: string, key: string, fallback: string): string {
   const value = byKey(group(section)?.links, key)?.url;
   return value === null || value === undefined || value === '' ? fallback : String(value);
 }
+const simonCourseUrl = link("members", "link-link-5", "");
 ---
 
 <link rel="preload" as="image" href={asset("hero","image-background","/brand-assets/dgs-homepage/photos/hero-fishing.jpg")} fetchpriority="high" />
@@ -525,11 +526,7 @@ function link(section: string, key: string, fallback: string): string {
 <div class="mhead" style="display: flex; flex-direction: column; gap: 6px">
 <p style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-size: 20px; color: #1F4E8C">{text("members","text-the-lazy-coder","The Lazy Coder")}</p>
 <h3 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-optical-sizing: auto; font-weight: 400; font-size: 21px; letter-spacing: -0.015em">{text("members","text-simon-cornelius","Simon Cornelius")}</h3>
-{/^https:\/\//.test(link("members","link-link-5","")) ? (
-<a target="_blank" rel="noopener" href={link("members","link-link-5","")} style="align-self: flex-start; font-size: 15px; font-weight: 500; color: #1F4E8C; text-decoration: underline; text-decoration-color: #C3CAD1; text-underline-offset: 3px">{text("members","text-local-seo-schema-engineer-texas","Local SEO & schema engineer · Texas")}</a>
-) : (
 <span data-missing-member-link="true" style="align-self: flex-start; font-size: 15px; font-weight: 500; color: #1F4E8C; text-decoration: none">{text("members","text-local-seo-schema-engineer-texas","Local SEO & schema engineer · Texas")}</span>
-)}
 </div>
 <p class="mbio" style="margin: 6px 0 0; font-size: 16px; line-height: 1.6; color: #4E5761">{text("members","text-a-self-described-introvert-who-loves-networking-","A self-described introvert who loves networking, and an engineer at heart: if he has to do something twice, he writes a tool for it. Built his own accounting app in an afternoon rather than pay for one, and teaches an Entities & Schema course.")}</p>
 
@@ -537,7 +534,11 @@ function link(section: string, key: string, fallback: string): string {
 
 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: #0A2240; background: #FFFFFF; border: 1px solid #C3CAD1; border-radius: 2px; padding: 4px 8px">{text("members","text-conference-speaker-9","Conference speaker")}</span>
 
+{/^https:\/\//.test(simonCourseUrl) ? (
+<a href={simonCourseUrl} target="_blank" rel="noopener" style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: #0A2240; background: #FFFFFF; border: 1px solid #C3CAD1; border-radius: 2px; padding: 4px 8px; text-decoration: underline">{text("members","text-instructor-entities-schema","Instructor · Entities & Schema")}</a>
+) : (
 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: #0A2240; background: #FFFFFF; border: 1px solid #C3CAD1; border-radius: 2px; padding: 4px 8px">{text("members","text-instructor-entities-schema","Instructor · Entities & Schema")}</span>
+)}
 
 <span style="font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; color: #0A2240; background: #FFFFFF; border: 1px solid #C3CAD1; border-radius: 2px; padding: 4px 8px">{text("members","text-level-7-google-local-guide","Level 7 · Google Local Guide")}</span>
 

@@ -53,7 +53,7 @@ const members = memberDefinitions.map(([nameKey, titleKey, linkKey]) => {
 		...(jobTitle ? { jobTitle } : {}),
 		...(company ? { worksFor: { '@type': 'Organization', name: company } } : {}),
 		...(location ? { homeLocation: { '@type': 'Place', name: location } } : {}),
-		...(/^https:\/\//.test(url) ? { sameAs: url } : {}),
+		...(/^https:\/\//.test(url) ? (linkKey === 'link-link-5' ? { subjectOf: { '@type': 'Course', url } } : { sameAs: url }) : {}),
 	};
 });
 const faq = resolveHomepageFaq(sourceContent?.faq?.texts ?? []);

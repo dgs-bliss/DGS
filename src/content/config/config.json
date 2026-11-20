@@ -12,6 +12,7 @@
     "footerCopyrightSuffix": "A nonprofit mastermind"
   },
   "contactForm": {
+    "notificationRecipients": "hello@digitalgrowthsociety.org, rich@blissdrive.com",
     "heading": "Contact us",
     "description": "Applications are delivered securely to the Digital Growth Society mailbox.",
     "buttonText": "Send Message",

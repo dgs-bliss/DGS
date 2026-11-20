@@ -1,7 +1,7 @@
 ---
 import { tinaField } from '@tinacms/astro/tina-field';
 
-const { data = null, config = null } = Astro.props;
+const { data = null } = Astro.props;
 const block = Array.isArray(data?.blocks) ? data.blocks[0] : data;
 const hero = block?.hero || {};
 const formSection = block?.formSection || {};
@@ -16,7 +16,7 @@ const requestCards = Array.isArray(requests?.cards) && requests.cards.length ? r
   { title: 'DMCA & Legal Notices', text: 'Copyright takedown notices, counter-notifications, and other legal correspondence reach the publication through the editorial address.' },
   { title: 'Letters to the Editor', text: 'Letters written for publication as reader correspondence should be flagged as such in the subject line.' },
 ];
-const formAction = formSection.formAction || config?.contactForm?.formspreeEndpoint || '';
+const formAction = formSection.formAction || '';
 const formConfigured = /^https:\/\/formspree\.io\/f\/[A-Za-z0-9_-]+$/.test(formAction);
 const t = (value: unknown, fallback: string) => String(value || fallback);
 ---

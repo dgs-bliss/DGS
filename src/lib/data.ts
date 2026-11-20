@@ -322,7 +322,7 @@ export async function getConfig() {
 			headerNavigation { ... on Navigation { _sys { relativePath } } }
 			footerNavigation { ... on Navigation { _sys { relativePath } } }
 			seo { title description siteOwner logo favicon footerLogo footerTagline footerCopyrightSuffix }
-			contactForm { formspreeEndpoint heading description buttonText note subject }
+			contactForm { heading description buttonText note subject }
 			codeInjection { headerCode footerCode }
 			contactLinks { title link icon }
 			footerStarfield

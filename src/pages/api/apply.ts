@@ -9,6 +9,7 @@ import {
   type RateLimitKV,
 } from '../../lib/apply-form';
 import { sendSmtpMessages, type EmailMessage } from '../../lib/smtp';
+import { loadNotificationRecipients } from '../../lib/notification-recipients';
 
 export const prerender = false;
 
@@ -71,7 +72,7 @@ function escapeHtml(value: string) {
   })[character] || character);
 }
 
-function applicationMessages(data: ApplicationData, fromEmail: string, toEmail: string): EmailMessage[] {
+function applicationMessages(data: ApplicationData, fromEmail: string, recipients: string[]): EmailMessage[] {
   const cold = data.referrer === 'No one yet';
   const subject = `${cold ? '[Cold] ' : ''}New DGS speaker application — ${data.name}`;
   const hotseat = data.hotseat || 'Not provided';
@@ -126,15 +127,15 @@ function applicationMessages(data: ApplicationData, fromEmail: string, toEmail: 
   `.trim();
 
   return [
-    {
+    ...recipients.map((to): EmailMessage => ({
       fromEmail,
       fromName: 'Digital Growth Society Applications',
-      to: toEmail,
+      to,
       replyTo: data.email,
       subject,
       text: internalText,
       html: internalHtml,
-    },
+    })),
     {
       fromEmail,
       fromName: 'Digital Growth Society',
@@ -206,8 +207,13 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   const fromEmail = envString('APPLY_FROM_EMAIL', 'applications@digitalgrowthsociety.org');
-  const toEmail = envString('APPLY_TO_EMAIL', 'applications@digitalgrowthsociety.org');
   try {
+    const recipients = await loadNotificationRecipients(
+      envString('NEXT_PUBLIC_TINA_CLIENT_ID', import.meta.env.NEXT_PUBLIC_TINA_CLIENT_ID),
+      envString('NEXT_PUBLIC_TINA_BRANCH', envString('TINA_BRANCH', import.meta.env.NEXT_PUBLIC_TINA_BRANCH || 'main')),
+      envString('TINA_TOKEN'),
+      envString('APPLY_TO_EMAIL', 'applications@digitalgrowthsociety.org'),
+    );
     await sendSmtpMessages(
       {
         hostname: envString('SMTP_HOST', 'mail.blissdrive.net'),
@@ -216,7 +222,7 @@ export const POST: APIRoute = async ({ request }) => {
         password: smtpPassword,
         heloName: 'digitalgrowthsociety.org',
       },
-      applicationMessages(validation.data, fromEmail, toEmail),
+      applicationMessages(validation.data, fromEmail, recipients),
     );
   } catch (error) {
     console.error('DGS application SMTP delivery failed.', error instanceof Error ? error.message : 'Unknown SMTP error');

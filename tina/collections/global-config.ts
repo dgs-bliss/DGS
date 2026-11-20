@@ -1,4 +1,5 @@
 import type { Collection } from "tinacms";
+import { parseNotificationRecipients } from "../../src/lib/notification-recipients";
 
 const linkFields = [
   { name: "title", label: "Link Label", type: "string" },
@@ -64,7 +65,13 @@ export const GlobalConfigCollection: Collection = {
       label: "Contact Form",
       type: "object",
       fields: [
-        { name: "formspreeEndpoint", label: "Formspree Endpoint URL", type: "string" },
+        {
+          name: "notificationRecipients",
+          label: "Notification Recipient Emails",
+          description: "Separate up to 10 email addresses with commas, e.g. hello@digitalgrowthsociety.org. Leave blank to use the default applications inbox.",
+          type: "string",
+          ui: { validate: (value) => parseNotificationRecipients(value) === null ? "Enter up to 10 valid email addresses separated by commas." : undefined },
+        },
         { name: "heading", label: "Heading", type: "string" },
         { name: "description", label: "Description", type: "string", ui: { component: "textarea" } },
         { name: "buttonText", label: "Button Text", type: "string" },

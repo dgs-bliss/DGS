@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "site": { "name": "Digital Growth Society", "url": "https://www.digitalgrowthsociety.org" },
+  "generatedAt": "2026-11-20T17:35:02.288Z",
+  "generator": { "name": "SchemaBrains", "version": "1.0.0", "sha": "b4dd03739f6f24ce1b0a4e97ce359134572333c0" },
+  "resources": [
+    { "id": "https://www.digitalgrowthsociety.org/#organization", "type": "Organization", "name": "Digital Growth Society", "description": "Twelve operators. One table. Every Friday since 2019.", "url": "https://www.digitalgrowthsociety.org", "sameAs": [] },
+    { "id": "https://www.digitalgrowthsociety.org/#webpage", "type": "WebPage", "name": "Digital Growth Society | Private SEO & AI Mastermind Since 2019", "description": "Twelve operators. One table. Every Friday since 2019.", "url": "https://www.digitalgrowthsociety.org/", "sameAs": [] },
+    { "id": "https://www.digitalgrowthsociety.org/#website", "type": "WebSite", "name": "Digital Growth Society", "description": "Twelve operators. One table. Every Friday since 2019.", "url": "https://www.digitalgrowthsociety.org", "sameAs": [] },
+    { "id": "https://www.digitalgrowthsociety.org/llms.txt#document", "type": "DigitalDocument", "name": "Digital Growth Society llms.txt", "description": null, "url": "https://www.digitalgrowthsociety.org/llms.txt", "sameAs": [] },
+    { "id": "https://www.digitalgrowthsociety.org/#glossary", "type": "DefinedTermSet", "name": "Digital Growth Society Glossary", "description": "Glossary of digital growth society terms and definitions referenced on Digital Growth Society.", "url": null, "sameAs": [] },
+    { "id": "https://www.digitalgrowthsociety.org/#term-ai-agents", "type": "DefinedTerm", "name": "AI agents", "description": "An AI agent is an artificial intelligence program that can make decisions, pursue goals, and take actions independent of humans. Agentic AI contrasts with tool-like AI use for narrow, specific tasks such as answering questions - as with chatbots in the non-agentic forms that were common in 2023, or with traditional machine learning algorithms.", "url": null, "sameAs": ["https://en.wikipedia.org/wiki/AI_agent","https://dbpedia.org/resource/AI_agent","http://www.productontology.org/id/AI_agent"] }
+  ],
+  "jsonLd": { "url": null, "sha256": null },
+  "llmsTxt": { "url": null, "sha256": null }
+}

@@ -1,0 +1,27 @@
+---
+interface Props {
+  glossary: { name?: string; description?: string };
+  terms: { name?: string; description?: string; '@id': string }[];
+}
+const { glossary, terms } = Astro.props;
+---
+
+<section id="glossary" aria-labelledby="glossary-title">
+  <h2 id="glossary-title">{glossary.name}</h2>
+  <p>{glossary.description}</p>
+  <dl>
+    {terms.map((term) => <>
+      <dt id={new URL(term['@id']).hash.slice(1)}>{term.name}</dt>
+      <dd>{term.description}</dd>
+    </>)}
+  </dl>
+</section>
+
+<style>
+  section { max-width: 1200px; margin: 0 auto; padding: 0 24px 104px; }
+  h2 { margin: 0; font-family: 'Newsreader', Georgia, serif; font-size: clamp(34px, 4vw, 52px); font-weight: 400; line-height: 1.08; letter-spacing: -0.015em; }
+  p, dl { margin: 16px 0 0; }
+  dt { font-weight: 600; }
+  dd { margin: 6px 0 0; }
+  p, dd { max-width: 760px; font-size: 18px; line-height: 1.65; color: #4E5761; }
+</style>

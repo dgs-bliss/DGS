@@ -1,0 +1,285 @@
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://www.digitalgrowthsociety.org/#organization",
+   "name": "Digital Growth Society",
+   "url": "https://www.digitalgrowthsociety.org",
+   "alternateName": [
+    "Digital Growth Society Greater together · Since 2019"
+   ],
+   "description": "Twelve operators. One table. Every Friday since 2019.",
+   "knowsAbout": [
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#glossary"
+    },
+    "https://en.wikipedia.org/wiki/AI_agent",
+    "https://dbpedia.org/resource/AI_agent",
+    "http://www.productontology.org/id/AI_agent",
+    "AI agents",
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#term-ai-agents"
+    }
+   ],
+   "knowsLanguage": "en",
+   "foundingDate": "2019",
+   "logo": {
+    "@id": "https://www.digitalgrowthsociety.org/#logo"
+   },
+   "image": {
+    "@id": "https://www.digitalgrowthsociety.org/#primaryimage"
+   }
+  },
+  {
+   "@type": "ImageObject",
+   "@id": "https://www.digitalgrowthsociety.org/#logo",
+   "url": "https://www.digitalgrowthsociety.org/brand-assets/dgs-homepage/favicon.png",
+   "contentUrl": "https://www.digitalgrowthsociety.org/brand-assets/dgs-homepage/favicon.png",
+   "caption": "Digital Growth Society"
+  },
+  {
+   "@type": "ImageObject",
+   "@id": "https://www.digitalgrowthsociety.org/#primaryimage",
+   "url": "https://www.digitalgrowthsociety.org/brand-assets/dgs-homepage/photos/hero-fishing.jpg",
+   "contentUrl": "https://www.digitalgrowthsociety.org/brand-assets/dgs-homepage/photos/hero-fishing.jpg",
+   "representativeOfPage": true
+  },
+  {
+   "@type": "WebPage",
+   "@id": "https://www.digitalgrowthsociety.org/#webpage",
+   "name": "Digital Growth Society | Private SEO & AI Mastermind Since 2019",
+   "url": "https://www.digitalgrowthsociety.org/",
+   "isPartOf": {
+    "@id": "https://www.digitalgrowthsociety.org/#website"
+   },
+   "mainEntity": {
+    "@id": "https://www.digitalgrowthsociety.org/#faq"
+   },
+   "about": [
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#organization"
+    },
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#glossary"
+    },
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#term-ai-agents"
+    }
+   ],
+   "description": "Twelve operators. One table. Every Friday since 2019.",
+   "alternativeHeadline": "This is what Friday looks like.",
+   "primaryImageOfPage": {
+    "@id": "https://www.digitalgrowthsociety.org/#primaryimage"
+   },
+   "breadcrumb": {
+    "@id": "https://www.digitalgrowthsociety.org/#breadcrumb"
+   },
+   "inLanguage": "en",
+   "hasPart": {
+    "@id": "https://www.digitalgrowthsociety.org/#faq"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "@id": "https://www.digitalgrowthsociety.org/#breadcrumb",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Digital Growth Society",
+     "item": "https://www.digitalgrowthsociety.org"
+    }
+   ]
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://www.digitalgrowthsociety.org/#website",
+   "name": "Digital Growth Society",
+   "url": "https://www.digitalgrowthsociety.org",
+   "publisher": {
+    "@id": "https://www.digitalgrowthsociety.org/#organization"
+   },
+   "keywords": [
+    "Pressure-test",
+    "SEO Spring",
+    "Non-profit",
+    "Machine-readable",
+    "Outcome-based",
+    "Big-firm",
+    "Entity-seo",
+    "Mid-size",
+    "Master-metrics",
+    "Bmi-affiliated",
+    "Brand-seo",
+    "Intent-data",
+    "Beta-launch",
+    "Beta-test",
+    "society",
+    "table",
+    "mastermind",
+    "AI Mastermind",
+    "ideas",
+    "content",
+    "Greater",
+    "SEO Rockstars",
+    "Thorbit",
+    "tactics",
+    "way",
+    "seats",
+    "advisors",
+    "communities",
+    "courses",
+    "mission",
+    "business",
+    "rabbit hole",
+    "gratitude",
+    "playbook",
+    "retreat",
+    "focus",
+    "fun",
+    "level",
+    "gap",
+    "demos",
+    "generosity",
+    "AI agents"
+   ],
+   "description": "Twelve operators. One table. Every Friday since 2019.",
+   "inLanguage": "en",
+   "hasPart": [
+    {
+     "@id": "https://www.digitalgrowthsociety.org/llms.txt#document"
+    }
+   ]
+  },
+  {
+   "@type": "DigitalDocument",
+   "@id": "https://www.digitalgrowthsociety.org/llms.txt#document",
+   "name": "Digital Growth Society llms.txt",
+   "url": "https://www.digitalgrowthsociety.org/llms.txt",
+   "encodingFormat": "text/plain",
+   "inLanguage": "en",
+   "isPartOf": {
+    "@id": "https://www.digitalgrowthsociety.org/#website"
+   }
+  },
+  {
+   "@type": "DefinedTermSet",
+   "@id": "https://www.digitalgrowthsociety.org/#glossary",
+   "name": "Digital Growth Society Glossary",
+   "description": "Glossary of digital growth society terms and definitions referenced on Digital Growth Society.",
+   "hasDefinedTerm": [
+    {
+     "@id": "https://www.digitalgrowthsociety.org/#term-ai-agents"
+    }
+   ]
+  },
+  {
+   "@type": "DefinedTerm",
+   "@id": "https://www.digitalgrowthsociety.org/#term-ai-agents",
+   "name": "AI agents",
+   "description": "An AI agent is an artificial intelligence program that can make decisions, pursue goals, and take actions independent of humans. Agentic AI contrasts with tool-like AI use for narrow, specific tasks such as answering questions - as with chatbots in the non-agentic forms that were common in 2023, or with traditional machine learning algorithms.",
+   "termCode": "AI_AGENTS",
+   "inDefinedTermSet": {
+    "@id": "https://www.digitalgrowthsociety.org/#glossary"
+   },
+   "sameAs": [
+    "https://en.wikipedia.org/wiki/AI_agent",
+    "https://dbpedia.org/resource/AI_agent",
+    "http://www.productontology.org/id/AI_agent"
+   ],
+   "subjectOf": {
+    "@id": "https://www.digitalgrowthsociety.org/#webpage"
+   }
+  },
+  {
+   "@type": "FAQPage",
+   "@id": "https://www.digitalgrowthsociety.org/#faq",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "When and where do you meet?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Every Friday at 8:30 a.m. Pacific (11:30 a.m. Eastern), on Zoom."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What does a guest session look like?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "We start with a quick round of introductions, about 10 to 15 minutes. Then the floor is yours for 30 minutes or so. The last 20 to 30 minutes are open discussion and your hot seat."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Do I need a polished presentation?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. This isn’t a conference stage, and it’s pretty informal. Bring the knowledge you’d share in a room of trusted peers but wouldn’t put in front of a hundred people: a test, a workflow, a tool. Slides are optional."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I share something I’m building?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Guests often beta-launch or beta-test their products with us. It’s a highly technical room, so expect sharp questions and ideas you can use."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it cost anything to present?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Presenting is free."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What happens after I apply?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "We read every application and you’ll hear back from us within a few days."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Will my session be shared?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. Sessions are recorded for members only. Everything said at the table is confidential and is never published, posted or passed on."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "How do I join the Dozen?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "You don’t apply to join. Guests present first and join our Master Council. When a seat opens, the current members vote in a new member from the Council."
+     }
+    }
+   ],
+   "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+     ".faq-answer-0",
+     ".faq-answer-1",
+     ".faq-answer-2",
+     ".faq-answer-3",
+     ".faq-answer-4",
+     ".faq-answer-5",
+     ".faq-answer-6",
+     ".faq-answer-7"
+    ]
+   },
+   "mainEntityOfPage": {
+    "@id": "https://www.digitalgrowthsociety.org/#webpage"
+   },
+   "about": {
+    "@id": "https://www.digitalgrowthsociety.org/#organization"
+   }
+  }
+ ]
+}

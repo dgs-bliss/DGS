@@ -4,6 +4,7 @@ import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import FrontPage from '../templates/FrontPage.astro';
 import { getConfig, getEditablePage, getPublicPage, listBlogs } from '../lib/data';
 import { islands } from '../lib/islands';
+import { homepageSchema, resolveHomepageFaq } from '../lib/homepage-schema';
 
 const slug = 'home';
 const page = await getPublicPage(slug);
@@ -55,42 +56,26 @@ const members = memberDefinitions.map(([nameKey, titleKey, linkKey]) => {
 		...(/^https:\/\//.test(url) ? { sameAs: url } : {}),
 	};
 });
-const faqTexts = sourceContent?.faq?.texts ?? [];
-const faqDefinitions = [
-	['text-when-and-where-do-you-meet', 'text-every-friday-at-8-30-a-m-pacific-11-30-a-m-easte'],
-	['text-what-does-a-guest-session-look-like', 'text-we-start-with-a-quick-round-of-introductions-abo'],
-	['text-do-i-need-a-polished-presentation', 'text-no-this-isn-t-a-conference-stage-and-it-s-pretty'],
-	['text-can-i-share-something-i-m-building', 'text-yes-guests-often-beta-launch-or-beta-test-their-'],
-	['text-does-it-cost-anything-to-present', 'text-no-presenting-is-free'],
-	['text-what-happens-after-i-apply', 'text-we-read-every-application-and-you-ll-hear-back-f'],
-	['text-will-my-session-be-shared', 'text-no-sessions-are-recorded-for-members-only-everyt'],
-	['text-how-do-i-join-the-dozen', 'text-you-don-t-apply-to-join-guests-present-first-and'],
-] as const;
-const siteUrl = new URL('/', Astro.site || Astro.url.origin).href;
-const organizationData = {
-	'@context': 'https://schema.org',
-	'@type': 'Organization',
-	name: config?.seo?.title || 'Digital Growth Society',
-	alternateName: 'DGS',
-	url: siteUrl,
-	foundingDate: '2019',
-	slogan: 'Greater together.',
-	description,
-	member: members,
+const faq = resolveHomepageFaq(sourceContent?.faq?.texts ?? []);
+const structuredData = {
+	...homepageSchema,
+	'@graph': homepageSchema['@graph'].map((node) => {
+		if (node['@type'] === 'Organization') {
+			return { ...node, member: members.filter((member) => member.name) };
+		}
+		if (node['@type'] === 'FAQPage') {
+			return {
+				...node,
+				mainEntity: faq.map(({ question, answer }) => ({
+					'@type': 'Question',
+					name: question,
+					acceptedAnswer: { '@type': 'Answer', text: answer },
+				})),
+			};
+		}
+		return node;
+	}),
 };
-const faqData = {
-	'@context': 'https://schema.org',
-	'@type': 'FAQPage',
-	mainEntity: faqDefinitions.map(([questionKey, answerKey]) => ({
-		'@type': 'Question',
-		name: textValue(faqTexts, questionKey),
-		acceptedAnswer: {
-			'@type': 'Answer',
-			text: textValue(faqTexts, answerKey),
-		},
-	})),
-};
-const structuredData = [organizationData, faqData];
 ---
 
 <Base

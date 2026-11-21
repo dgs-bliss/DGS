@@ -1,0 +1,55 @@
+name: Deploy and verify DGS production
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: read
+
+concurrency:
+  group: dgs-production
+  cancel-in-progress: false
+
+jobs:
+  production:
+    if: github.repository == 'dgs-bliss/DGS' && github.ref == 'refs/heads/main' && !github.event.forced && !github.event.deleted
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned site dependencies
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+          python -m pip install 'requests==2.32.5'
+      - name: Promote approved squash merge and verify public URLs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIOUS_SHA: ${{ github.event.before }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.DGS_PRODUCTION_CLOUDFLARE_TOKEN }}
+          TINA_TOKEN: ${{ secrets.DGS_PRODUCTION_TINA_TOKEN }}
+          CLOUDINARY_API_KEY: ${{ secrets.DGS_PRODUCTION_CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.DGS_PRODUCTION_CLOUDINARY_API_SECRET }}
+          CLOUDINARY_CLOUD_NAME: ${{ vars.DGS_PRODUCTION_CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_ROOT_FOLDER: ${{ vars.DGS_PRODUCTION_CLOUDINARY_ROOT_FOLDER }}
+        run: python -u scripts/release-dgs-production.py
+      - name: Save verified release evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dgs-production-proof
+          path: dgs-production-proof.json
+          if-no-files-found: error

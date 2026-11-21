@@ -30,9 +30,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Install pinned pnpm
+        run: |
+          npm install --prefix "$RUNNER_TEMP/dgs-pnpm" --no-audit --no-fund pnpm@12.21.0
+          echo "$RUNNER_TEMP/dgs-pnpm/node_modules/.bin" >> "$GITHUB_PATH"
       - name: Install pinned site dependencies
         run: |
-          corepack enable
+          test "$(pnpm --version)" = '12.21.0'
           pnpm install --frozen-lockfile
           python -m pip install 'requests==2.32.5'
       - name: Promote approved squash merge and verify public URLs

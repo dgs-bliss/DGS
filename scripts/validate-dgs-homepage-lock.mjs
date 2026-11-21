@@ -58,6 +58,7 @@ const totals = {
 // Keep the original authority fixture locked while allowing the new Council entry.
 const additions = [
   ['textEntries', 'texts', 'text-jeff-lenney', 'value'],
+  ['imageEntries', 'images', 'image-jeff-lenney', 'image'],
   ['linkEntries', 'links', 'link-jeff-lenney', 'url'],
 ];
 const expectedTotals = { ...manifest.expected };

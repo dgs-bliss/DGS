@@ -55,8 +55,22 @@ const totals = {
   imageEntries: sectionValues.reduce((n, section) => n + (section.images || []).length, 0),
   linkEntries: sectionValues.reduce((n, section) => n + (section.links || []).length, 0),
 };
+// Keep the original authority fixture locked while allowing the new Council entry.
+const additions = [
+  ['textEntries', 'texts', 'text-jeff-lenney', 'value'],
+  ['imageEntries', 'images', 'image-jeff-lenney', 'image'],
+  ['linkEntries', 'links', 'link-jeff-lenney', 'url'],
+];
+const expectedTotals = { ...manifest.expected };
+for (const [totalKey, field, entryKey, valueKey] of additions) {
+  const entries = block.sourceContent.network?.[field]?.filter((item) => item.key === entryKey) ?? [];
+  if (entries.length !== 1 || !entries[0][valueKey] || !front.includes(`"network","${entryKey}"`)) {
+    fail(`expected one rendered Council field: ${entryKey}`);
+  }
+  expectedTotals[totalKey] += 1;
+}
 for (const [key, value] of Object.entries(totals)) {
-  if (value !== manifest.expected[key]) fail(`${key} ${value} != ${manifest.expected[key]}`);
+  if (value !== expectedTotals[key]) fail(`${key} ${value} != ${expectedTotals[key]}`);
 }
 
 const pages = readdirSync(join(root, 'src/content/page')).filter((name) => name.endsWith('.mdx')).sort();
